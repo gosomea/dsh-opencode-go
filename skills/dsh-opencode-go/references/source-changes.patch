@@ -1,0 +1,1677 @@
+diff --git a/docs/config-catalog.i18n.yaml b/docs/config-catalog.i18n.yaml
+index 106db59c55..b54983b6a1 100644
+--- a/docs/config-catalog.i18n.yaml
++++ b/docs/config-catalog.i18n.yaml
+@@ -2,5 +2,5 @@
+ # side as of the last confirmed-consistent state. Both languages carry equal authority;
+ # after editing either side, bring the other along and re-record with:
+ #   pnpm run verify-translation-pairing --write docs/config-catalog.md
+-config-catalog.md: b9e75f6679d43aef41808a30ed370e26070c1331
+-config-catalog.zh.md: d76c88fb806998abee414347822a3d11c3b2b7de
++config-catalog.md: ac52e4222a73c02c2301a21c9330ceeaf9bc9f06
++config-catalog.zh.md: 163bdcda6edb80242ee29ad749aa6e4a60a94603
+diff --git a/docs/config-catalog.md b/docs/config-catalog.md
+index b9e75f6679..ac52e4222a 100644
+--- a/docs/config-catalog.md
++++ b/docs/config-catalog.md
+@@ -1536,6 +1536,8 @@ export interface Config {
+    * and registers them the moment a settings section supplies profiles.
+    */
+   providers: Volatile<Record<string, PiAiProviderProfile>>
++  /** Catalog routes delegated to another adapter plugin; must not also be configured here. */
++  excludedProviders: Volatile<string[]>
+ }
+ 
+ /** Configuration for one pi-ai provider route; the `providers` dict key IS the route. */
+@@ -1638,6 +1640,12 @@ export interface PiAiModelProfile {
+   id: string
+   /** Display name for selectors; defaults to the catalog name, then the id. */
+   name?: string
++  /** Provider pricing or capability detail shown by model selectors. */
++  description?: string
++  /** This model's wire protocol; overrides route and installed-catalog defaults. */
++  api?: string
++  /** This model's endpoint root; overrides route and installed-catalog defaults. */
++  baseURL?: string
+   /** Maximum combined request and response context in tokens. */
+   contextWindow?: number
+   /**
+@@ -1794,7 +1802,7 @@ export type PiAiThinkingTokenBudgetField = NonNullable<OpenAICompletionsCompat['
+ 
+ Depends on: `Api` (`@earendil-works/pi-ai`) · `CacheRetention` (`@earendil-works/pi-ai`) · `Model` (`@earendil-works/pi-ai`) · `ModelThinkingLevel` (`@earendil-works/pi-ai`) · `OpenAICompletionsCompat` (`@earendil-works/pi-ai`) · [`RetryPolicyConfig`](../packages/llm/llm/src/index.ts) · `ThinkingBudgets` (`@earendil-works/pi-ai`) · `Transport` (`@earendil-works/pi-ai`) · `Volatile` (`@deepseek-ai/cordis`)
+ 
+-Source: [`packages/llm/llm-pi-ai/src/config.ts:222`](../packages/llm/llm-pi-ai/src/config.ts)
++Source: [`packages/llm/llm-pi-ai/src/config.ts:224`](../packages/llm/llm-pi-ai/src/config.ts)
+ 
+ <a id="deepseek-aidsh-llm-replay"></a>
+ 
+diff --git a/docs/config-catalog.zh.md b/docs/config-catalog.zh.md
+index d76c88fb80..163bdcda6e 100644
+--- a/docs/config-catalog.zh.md
++++ b/docs/config-catalog.zh.md
+@@ -1538,6 +1538,8 @@ export interface Config {
+    * and registers them the moment a settings section supplies profiles.
+    */
+   providers: Volatile<Record<string, PiAiProviderProfile>>
++  /** Catalog routes delegated to another adapter plugin; must not also be configured here. */
++  excludedProviders: Volatile<string[]>
+ }
+ 
+ /** Configuration for one pi-ai provider route; the `providers` dict key IS the route. */
+@@ -1640,6 +1642,12 @@ export interface PiAiModelProfile {
+   id: string
+   /** Display name for selectors; defaults to the catalog name, then the id. */
+   name?: string
++  /** Provider pricing or capability detail shown by model selectors. */
++  description?: string
++  /** This model's wire protocol; overrides route and installed-catalog defaults. */
++  api?: string
++  /** This model's endpoint root; overrides route and installed-catalog defaults. */
++  baseURL?: string
+   /** Maximum combined request and response context in tokens. */
+   contextWindow?: number
+   /**
+@@ -1796,7 +1804,7 @@ export type PiAiThinkingTokenBudgetField = NonNullable<OpenAICompletionsCompat['
+ 
+ Depends on: `Api` (`@earendil-works/pi-ai`) · `CacheRetention` (`@earendil-works/pi-ai`) · `Model` (`@earendil-works/pi-ai`) · `ModelThinkingLevel` (`@earendil-works/pi-ai`) · `OpenAICompletionsCompat` (`@earendil-works/pi-ai`) · [`RetryPolicyConfig`](../packages/llm/llm/src/index.ts) · `ThinkingBudgets` (`@earendil-works/pi-ai`) · `Transport` (`@earendil-works/pi-ai`) · `Volatile` (`@deepseek-ai/cordis`)
+ 
+-来源： [`packages/llm/llm-pi-ai/src/config.ts:222`](../packages/llm/llm-pi-ai/src/config.ts)
++来源： [`packages/llm/llm-pi-ai/src/config.ts:224`](../packages/llm/llm-pi-ai/src/config.ts)
+ 
+ <a id="deepseek-aidsh-llm-replay"></a>
+ 
+diff --git a/docs/event-producer-consumer.i18n.yaml b/docs/event-producer-consumer.i18n.yaml
+index a6e1582653..170460efd1 100644
+--- a/docs/event-producer-consumer.i18n.yaml
++++ b/docs/event-producer-consumer.i18n.yaml
+@@ -2,5 +2,5 @@
+ # side as of the last confirmed-consistent state. Both languages carry equal authority;
+ # after editing either side, bring the other along and re-record with:
+ #   pnpm run verify-translation-pairing --write docs/event-producer-consumer.md
+-event-producer-consumer.md: 1d844013f1230d6dbe535c3942279683f03738ce
+-event-producer-consumer.zh.md: 73438c3f19ef6850674a27bf8f490fe4cf52b420
++event-producer-consumer.md: c32ced29b51074903bcbfe158aa42b693735b65b
++event-producer-consumer.zh.md: e6df0d138628502dc2a15489be8750810cb0eddb
+diff --git a/docs/event-producer-consumer.md b/docs/event-producer-consumer.md
+index 1d844013f1..c32ced29b5 100644
+--- a/docs/event-producer-consumer.md
++++ b/docs/event-producer-consumer.md
+@@ -49,7 +49,7 @@ This matrix shows which packages dispatch each harness-owned event and which pac
+ | `goal/changed` | `emit` | [`packages/goal/goal/src/domain.ts:114`](../packages/goal/goal/src/domain.ts) | [`goal`](../packages/goal/goal) (`emit`) | [`goal-round-driver`](../packages/goal/goal-round-driver) |
+ | `hmr/change` | `emit` | [`packages/boot/hmr/src/index.ts:30`](../packages/boot/hmr/src/index.ts) | [`hmr`](../packages/boot/hmr) (`emit`) | - |
+ | `hmr/reload` | `emit` | [`packages/boot/hmr/src/index.ts:35`](../packages/boot/hmr/src/index.ts) | [`hmr`](../packages/boot/hmr) (`emit`) | - |
+-| `llm/adapters-updated` | `emit` | [`packages/llm/llm/src/types.ts:23`](../packages/llm/llm/src/types.ts) | [`llm`](../packages/llm/llm) (`events.dispatch`) | [`acp`](../packages/acp/acp), [`llm`](../packages/llm/llm), `remotes` |
++| `llm/adapters-updated` | `emit` | [`packages/llm/llm/src/types.ts:24`](../packages/llm/llm/src/types.ts) | [`llm`](../packages/llm/llm) (`events.dispatch`) | [`acp`](../packages/acp/acp), [`llm`](../packages/llm/llm), `remotes` |
+ | `llm/stream` | `waterfall` | [`packages/llm/llm/src/index.ts:73`](../packages/llm/llm/src/index.ts) | [`llm`](../packages/llm/llm) (`waterfall`) | [`agent-loop`](../packages/core/agent-loop), [`llm`](../packages/llm/llm), [`llm-replay`](../packages/test-support/llm-replay), [`session-checkpoint-policy`](../packages/session/session-checkpoint-policy), [`session-title`](../packages/session/session-title) |
+ | `permission-presets/catalog-changed` | `emit` | [`packages/interaction/permission-presets/src/types.ts:48`](../packages/interaction/permission-presets/src/types.ts) | [`permission-presets`](../packages/interaction/permission-presets) (`events.dispatch`) | `remotes` |
+ | `plugin-manager/changed` | `emit` | [`packages/boot/plugin-manager/src/types.ts:228`](../packages/boot/plugin-manager/src/types.ts) | [`plugin-manager`](../packages/boot/plugin-manager) (`emit`) | `remotes` |
+diff --git a/docs/event-producer-consumer.zh.md b/docs/event-producer-consumer.zh.md
+index 73438c3f19..e6df0d1386 100644
+--- a/docs/event-producer-consumer.zh.md
++++ b/docs/event-producer-consumer.zh.md
+@@ -51,7 +51,7 @@
+ | `goal/changed` | `emit` | [`packages/goal/goal/src/domain.ts:114`](../packages/goal/goal/src/domain.ts) | [`goal`](../packages/goal/goal) (`emit`) | [`goal-round-driver`](../packages/goal/goal-round-driver) |
+ | `hmr/change` | `emit` | [`packages/boot/hmr/src/index.ts:30`](../packages/boot/hmr/src/index.ts) | [`hmr`](../packages/boot/hmr) (`emit`) | - |
+ | `hmr/reload` | `emit` | [`packages/boot/hmr/src/index.ts:35`](../packages/boot/hmr/src/index.ts) | [`hmr`](../packages/boot/hmr) (`emit`) | - |
+-| `llm/adapters-updated` | `emit` | [`packages/llm/llm/src/types.ts:23`](../packages/llm/llm/src/types.ts) | [`llm`](../packages/llm/llm) (`events.dispatch`) | [`acp`](../packages/acp/acp), [`llm`](../packages/llm/llm), `remotes` |
++| `llm/adapters-updated` | `emit` | [`packages/llm/llm/src/types.ts:24`](../packages/llm/llm/src/types.ts) | [`llm`](../packages/llm/llm) (`events.dispatch`) | [`acp`](../packages/acp/acp), [`llm`](../packages/llm/llm), `remotes` |
+ | `llm/stream` | `waterfall` | [`packages/llm/llm/src/index.ts:73`](../packages/llm/llm/src/index.ts) | [`llm`](../packages/llm/llm) (`waterfall`) | [`agent-loop`](../packages/core/agent-loop), [`llm`](../packages/llm/llm), [`llm-replay`](../packages/test-support/llm-replay), [`session-checkpoint-policy`](../packages/session/session-checkpoint-policy), [`session-title`](../packages/session/session-title) |
+ | `permission-presets/catalog-changed` | `emit` | [`packages/interaction/permission-presets/src/types.ts:48`](../packages/interaction/permission-presets/src/types.ts) | [`permission-presets`](../packages/interaction/permission-presets) (`events.dispatch`) | `remotes` |
+ | `plugin-manager/changed` | `emit` | [`packages/boot/plugin-manager/src/types.ts:228`](../packages/boot/plugin-manager/src/types.ts) | [`plugin-manager`](../packages/boot/plugin-manager) (`emit`) | `remotes` |
+diff --git a/docs/persistence-catalog.i18n.yaml b/docs/persistence-catalog.i18n.yaml
+index 207b82e845..f2656ea6c8 100644
+--- a/docs/persistence-catalog.i18n.yaml
++++ b/docs/persistence-catalog.i18n.yaml
+@@ -2,5 +2,5 @@
+ # side as of the last confirmed-consistent state. Both languages carry equal authority;
+ # after editing either side, bring the other along and re-record with:
+ #   pnpm run verify-translation-pairing --write docs/persistence-catalog.md
+-persistence-catalog.md: 022944bea076f49e054e7194e6b475cf6dfca2bc
+-persistence-catalog.zh.md: 096bf746085d329427dfb5516db4c6387f0974fe
++persistence-catalog.md: a7ee540f6e2902f2a7348433f0e0079c219761a1
++persistence-catalog.zh.md: 6c4bfffccda17615f3c6b1facb26a06fe704cb2a
+diff --git a/docs/persistence-catalog.md b/docs/persistence-catalog.md
+index 022944bea0..a7ee540f6e 100644
+--- a/docs/persistence-catalog.md
++++ b/docs/persistence-catalog.md
+@@ -1919,7 +1919,7 @@ SHA-256: `ebb768d85ec87fb68e42fc14fd7d8535b5ac11791b14d04c6770180f0a719bf8`
+ 
+ SHA-256: `f311671e07bc7fa645a0b6597de9966b97147956565296ba76a36543801b66c5`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:397`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:404`](../packages/llm/llm/src/types.ts)
+ 
+ `"in-history"`
+ 
+@@ -3137,7 +3137,7 @@ Sources: [`packages/compaction/compaction/src/checkpoint.ts:22`](../packages/com
+ 
+ SHA-256: `8064c03c87c357fd1575cb9395ce86e6dcbe2d275bf7717864a02cddf01827d5`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:151`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:152`](../packages/llm/llm/src/types.ts)
+ 
+ One of:
+ 
+@@ -3159,7 +3159,7 @@ One of:
+ 
+ SHA-256: `7d65acf0a3a43a8f445ce5d3320b42eca492739fc931b2a7516bfb8368dc2c68`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:149`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:150`](../packages/llm/llm/src/types.ts)
+ 
+ One of:
+ 
+@@ -3372,7 +3372,7 @@ Sources: [`packages/attachment/attachment/src/types.ts:39`](../packages/attachme
+ 
+ SHA-256: `f2da0f27c1e6add59982c37b15e4a4912c5b33466859cce3b13d503600e24aef`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:98`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:99`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -3389,7 +3389,7 @@ Sources: [`packages/llm/llm/src/types.ts:98`](../packages/llm/llm/src/types.ts)
+ 
+ SHA-256: `5808e36c95355f0e745201b5db1b6bcec4ebf5adb75d3e82d7d59cc89635ab80`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:166`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:167`](../packages/llm/llm/src/types.ts)
+ 
+ | kind | Form property | Other required fields | Full definition |
+ |---|---|---|---|
+@@ -3627,7 +3627,7 @@ Sources: [`packages/attachment/attachment/src/types.ts:11`](../packages/attachme
+ 
+ SHA-256: `12d5808fac1996b9b3c2afa806e03022252ba2d7b88f835862ae1896591f60c7`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:79`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:80`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -3773,7 +3773,7 @@ Sources: [`packages/llm/llm/src/call-config.ts:36`](../packages/llm/llm/src/call
+ 
+ SHA-256: `5f2117d1856a5ab43c28371faa978ebfaa48f8c7d734ea3fc94842210df83dca`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:41`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:42`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -4214,7 +4214,7 @@ Sources: [`packages/core/tools/src/types.ts:11`](../packages/core/tools/src/type
+ 
+ SHA-256: `814d9434e1ddf9078612b3b34322f26e9363b469213335007f7e9ba7fee9464e`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:68`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:69`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -4231,7 +4231,7 @@ Sources: [`packages/llm/llm/src/types.ts:68`](../packages/llm/llm/src/types.ts)
+ 
+ SHA-256: `0acd94fe8794574c9ae72c7855ee16d29c546096d4af760d16d1225385764555`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:418`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:425`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -4543,7 +4543,7 @@ Sources: [`packages/skill/skill/src/index.ts:146`](../packages/skill/skill/src/i
+ 
+ SHA-256: `47e9095591ae36e7c39ee62553097772f2bfa16304536a72dbbc3f691f605180`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:440`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:447`](../packages/llm/llm/src/types.ts)
+ 
+ One of:
+ 
+@@ -4795,7 +4795,7 @@ One of:
+ 
+ SHA-256: `4e887768586528565381dadbddee6cef555874148089f4579e0b4b1ad096fc9c`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:62`](../packages/llm/llm/src/types.ts) · [`packages/web/web-search-deepseek/src/provider.ts:66`](../packages/web/web-search-deepseek/src/provider.ts)
++Sources: [`packages/llm/llm/src/types.ts:63`](../packages/llm/llm/src/types.ts) · [`packages/web/web-search-deepseek/src/provider.ts:66`](../packages/web/web-search-deepseek/src/provider.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -4837,7 +4837,7 @@ Array of [`TodoItem`](#persistence-type-sha256-a99f76fd149051c363f960bfeeb5b9509
+ 
+ SHA-256: `fec5442b9ee4122e10514d81d5a43648003fe8bfb7ee2ba50c0cdbdd383ed394`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:176`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:177`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -4858,7 +4858,7 @@ Sources: [`packages/llm/llm/src/types.ts:176`](../packages/llm/llm/src/types.ts)
+ 
+ SHA-256: `8e611bf46821e5003a1605a73560a6f56388295149d449dfe2142d5ec335f29c`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:115`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:116`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -4876,7 +4876,7 @@ Sources: [`packages/llm/llm/src/types.ts:115`](../packages/llm/llm/src/types.ts)
+ 
+ SHA-256: `c1f0f17b6493b85db6453bb30e01b208d703731b25bc1e68e5d4fc72eea9cdea`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:105`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:106`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -4912,7 +4912,7 @@ Sources: [`packages/llm/llm/src/message.ts:29`](../packages/llm/llm/src/message.
+ 
+ SHA-256: `43e311235aa537df1bacdd92d144df8a952337a76e9ac892cdf670f1a797bad8`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:127`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:128`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -4967,7 +4967,7 @@ Sources: [`packages/llm/llm/src/message.ts:173`](../packages/llm/llm/src/message
+ 
+ SHA-256: `66ba70f6f068da443f969a0b947a013c3addd776b9b60a0a393759c19825e9a2`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:461`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:468`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -5936,7 +5936,7 @@ Sources: [`packages/core/session/src/types.ts:375`](../packages/core/session/src
+ 
+ SHA-256: `8e31bb958e9b015e6f8407eaade32217068159e816f3cc99c3ad76eb889732e0`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:161`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:162`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -5949,7 +5949,7 @@ Sources: [`packages/llm/llm/src/types.ts:161`](../packages/llm/llm/src/types.ts)
+ 
+ SHA-256: `693f4952fb5565da96c06bace8924b098ac2fbc915fde0ff8019701183abc057`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:162`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:163`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -6460,7 +6460,7 @@ Sources: [`packages/core/session/src/types.ts:196`](../packages/core/session/src
+ 
+ SHA-256: `ab7ec5f9eb2c6dfacca5da4c37cf7ba85d04172053ee6b1ebf1709ffcd99c1a7`
+ 
+-Sources: [`packages/core/session/src/types.ts:214`](../packages/core/session/src/types.ts) · [`packages/llm/llm/src/types.ts:160`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/core/session/src/types.ts:214`](../packages/core/session/src/types.ts) · [`packages/llm/llm/src/types.ts:161`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -6900,7 +6900,7 @@ SHA-256: `28936c614bd4e7e2774806edcbb3cbfd3ee643ac1cbf0bbdff43d915505a8fe3`
+ 
+ SHA-256: `1d76406cbb2ddadb0dbbb51e9d8bc6cf678fed455cf8eb512f36f7c86d37a62f`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:158`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:159`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -7068,7 +7068,7 @@ SHA-256: `49dab019d00e8c26f27ad2ccff7b604d69e323ae4d17e0d2a7b6b8a830b1ade2`
+ 
+ SHA-256: `287211846beea1eccb5f9acee00d20388a38fcb2e95858fa2332d6f58529379a`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:159`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:160`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -7712,7 +7712,7 @@ SHA-256: `1033093edd0db80ff410e00830b523405e00bb0c7684948e531ff65095799625`
+ 
+ SHA-256: `d4b739491689cc6bb13d07ffac1a32239875abda364c0d5edd8f74faf5e9c00d`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:445`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:452`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -7726,7 +7726,7 @@ Sources: [`packages/llm/llm/src/types.ts:445`](../packages/llm/llm/src/types.ts)
+ 
+ SHA-256: `3bec87f9e6ab3da03346f49923d3c51621debc0159df68605e543c3b2a026f90`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:441`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:448`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -7932,7 +7932,7 @@ SHA-256: `b54940ff095c17e874c5be03815f4c2145a256cf3a1d34dae4ab2f7769dfffe8`
+ 
+ SHA-256: `a2b49331716ba0a7078b026d145306a70eae64b7313c3e6204bd931e75ec3bb1`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:447`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:454`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -8106,7 +8106,7 @@ Sources: [`packages/llm/llm/src/assistant-stream.ts:28`](../packages/llm/llm/src
+ 
+ SHA-256: `2abb711460e6238d851c30f3e4bdd87a2aa1887ee70575b3d3b7b25610673095`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:443`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:450`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -8426,7 +8426,7 @@ Sources: [`packages/llm/llm/src/assistant-stream.ts:21`](../packages/llm/llm/src
+ 
+ SHA-256: `95080295115fbd83544520ba247b68a03790131f6a2eac323d388758cb542f65`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:442`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:449`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -8474,7 +8474,7 @@ Sources: [`packages/llm/llm/src/assistant-stream.ts:35`](../packages/llm/llm/src
+ 
+ SHA-256: `88a610b831be6d92612a464be5c7d0b88ec24d97bd299837bf74bf7672183c9a`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:444`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:451`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+@@ -8652,7 +8652,7 @@ SHA-256: `aa0957eca50aeb28bcd2e6930b95809926edacb550c8c340ba526ba6b861b3d8`
+ 
+ SHA-256: `f1a96afe7503ac1817de769cd0ba13d9b80111c7034c50106b3344ecc14cc515`
+ 
+-Sources: [`packages/llm/llm/src/types.ts:446`](../packages/llm/llm/src/types.ts)
++Sources: [`packages/llm/llm/src/types.ts:453`](../packages/llm/llm/src/types.ts)
+ 
+ | Property | Presence | Type |
+ |---|---|---|
+diff --git a/docs/persistence-catalog.zh.md b/docs/persistence-catalog.zh.md
+index 096bf74608..6c4bfffccd 100644
+--- a/docs/persistence-catalog.zh.md
++++ b/docs/persistence-catalog.zh.md
+@@ -1921,7 +1921,7 @@ SHA-256: `ebb768d85ec87fb68e42fc14fd7d8535b5ac11791b14d04c6770180f0a719bf8`
+ 
+ SHA-256: `f311671e07bc7fa645a0b6597de9966b97147956565296ba76a36543801b66c5`
+ 
+-来源：[`packages/llm/llm/src/types.ts:397`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:404`](../packages/llm/llm/src/types.ts)
+ 
+ `"in-history"`
+ 
+@@ -3139,7 +3139,7 @@ SHA-256: `31907de9563751822af6d9be02bafaf26faa098bbd1cb412524134d577cc1648`
+ 
+ SHA-256: `8064c03c87c357fd1575cb9395ce86e6dcbe2d275bf7717864a02cddf01827d5`
+ 
+-来源：[`packages/llm/llm/src/types.ts:151`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:152`](../packages/llm/llm/src/types.ts)
+ 
+ 以下类型之一：
+ 
+@@ -3161,7 +3161,7 @@ SHA-256: `8064c03c87c357fd1575cb9395ce86e6dcbe2d275bf7717864a02cddf01827d5`
+ 
+ SHA-256: `7d65acf0a3a43a8f445ce5d3320b42eca492739fc931b2a7516bfb8368dc2c68`
+ 
+-来源：[`packages/llm/llm/src/types.ts:149`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:150`](../packages/llm/llm/src/types.ts)
+ 
+ 以下类型之一：
+ 
+@@ -3374,7 +3374,7 @@ SHA-256: `f19bee84bf3d20904553cdcd57465232bc1c2a194f54c4d195292ba0487223a6`
+ 
+ SHA-256: `f2da0f27c1e6add59982c37b15e4a4912c5b33466859cce3b13d503600e24aef`
+ 
+-来源：[`packages/llm/llm/src/types.ts:98`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:99`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -3391,7 +3391,7 @@ SHA-256: `f2da0f27c1e6add59982c37b15e4a4912c5b33466859cce3b13d503600e24aef`
+ 
+ SHA-256: `5808e36c95355f0e745201b5db1b6bcec4ebf5adb75d3e82d7d59cc89635ab80`
+ 
+-来源：[`packages/llm/llm/src/types.ts:166`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:167`](../packages/llm/llm/src/types.ts)
+ 
+ | kind | form 属性 | 其他必需字段 | 完整定义 |
+ |---|---|---|---|
+@@ -3629,7 +3629,7 @@ SHA-256: `b0b0eb1b16490f6bee135b2377e8f8c39227974c799ad7d49ff418af23ecbc35`
+ 
+ SHA-256: `12d5808fac1996b9b3c2afa806e03022252ba2d7b88f835862ae1896591f60c7`
+ 
+-来源：[`packages/llm/llm/src/types.ts:79`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:80`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -3775,7 +3775,7 @@ SHA-256: `326a9bfda27dda5882fb3cbe6e715df41dae2298fdae3d66437457268a665693`
+ 
+ SHA-256: `5f2117d1856a5ab43c28371faa978ebfaa48f8c7d734ea3fc94842210df83dca`
+ 
+-来源：[`packages/llm/llm/src/types.ts:41`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:42`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -4216,7 +4216,7 @@ SHA-256: `2fe5026daf14bd4ff2b7bfb7cf9791c302d9cbba06802178b6dfec00b892698f`
+ 
+ SHA-256: `814d9434e1ddf9078612b3b34322f26e9363b469213335007f7e9ba7fee9464e`
+ 
+-来源：[`packages/llm/llm/src/types.ts:68`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:69`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -4233,7 +4233,7 @@ SHA-256: `814d9434e1ddf9078612b3b34322f26e9363b469213335007f7e9ba7fee9464e`
+ 
+ SHA-256: `0acd94fe8794574c9ae72c7855ee16d29c546096d4af760d16d1225385764555`
+ 
+-来源：[`packages/llm/llm/src/types.ts:418`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:425`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -4545,7 +4545,7 @@ SHA-256: `672c4aa2a9b736e3d6e5da6346d2e2ed5e3573f2d0baafa18e7407c9f3fee3db`
+ 
+ SHA-256: `47e9095591ae36e7c39ee62553097772f2bfa16304536a72dbbc3f691f605180`
+ 
+-来源：[`packages/llm/llm/src/types.ts:440`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:447`](../packages/llm/llm/src/types.ts)
+ 
+ 以下类型之一：
+ 
+@@ -4797,7 +4797,7 @@ SHA-256: `b2d2a01e51341a3bfec809198952c8c830a7899f4cb6ecd3c1dc0b5d9a2af943`
+ 
+ SHA-256: `4e887768586528565381dadbddee6cef555874148089f4579e0b4b1ad096fc9c`
+ 
+-来源：[`packages/llm/llm/src/types.ts:62`](../packages/llm/llm/src/types.ts) · [`packages/web/web-search-deepseek/src/provider.ts:66`](../packages/web/web-search-deepseek/src/provider.ts)
++来源：[`packages/llm/llm/src/types.ts:63`](../packages/llm/llm/src/types.ts) · [`packages/web/web-search-deepseek/src/provider.ts:66`](../packages/web/web-search-deepseek/src/provider.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -4839,7 +4839,7 @@ SHA-256: `4b7ddaf3710b88ff9b8df66304f5f97bf03688fd19730eedc2e9535203c820ea`
+ 
+ SHA-256: `fec5442b9ee4122e10514d81d5a43648003fe8bfb7ee2ba50c0cdbdd383ed394`
+ 
+-来源：[`packages/llm/llm/src/types.ts:176`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:177`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -4860,7 +4860,7 @@ SHA-256: `fec5442b9ee4122e10514d81d5a43648003fe8bfb7ee2ba50c0cdbdd383ed394`
+ 
+ SHA-256: `8e611bf46821e5003a1605a73560a6f56388295149d449dfe2142d5ec335f29c`
+ 
+-来源：[`packages/llm/llm/src/types.ts:115`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:116`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -4878,7 +4878,7 @@ SHA-256: `8e611bf46821e5003a1605a73560a6f56388295149d449dfe2142d5ec335f29c`
+ 
+ SHA-256: `c1f0f17b6493b85db6453bb30e01b208d703731b25bc1e68e5d4fc72eea9cdea`
+ 
+-来源：[`packages/llm/llm/src/types.ts:105`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:106`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -4914,7 +4914,7 @@ SHA-256: `d9c462b9f62fdd3efc76a44b9524dc8781f6b91cd9c7e584b17d971defafebab`
+ 
+ SHA-256: `43e311235aa537df1bacdd92d144df8a952337a76e9ac892cdf670f1a797bad8`
+ 
+-来源：[`packages/llm/llm/src/types.ts:127`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:128`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -4969,7 +4969,7 @@ SHA-256: `4b259f7f8f0a44ad5e90b70a73553ced1df27012d126921d397ff403b6c86731`
+ 
+ SHA-256: `66ba70f6f068da443f969a0b947a013c3addd776b9b60a0a393759c19825e9a2`
+ 
+-来源：[`packages/llm/llm/src/types.ts:461`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:468`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -5938,7 +5938,7 @@ SHA-256: `5302e763151277614b97e77f00e3b326694c6c1247b916a20503c344dc970777`
+ 
+ SHA-256: `8e31bb958e9b015e6f8407eaade32217068159e816f3cc99c3ad76eb889732e0`
+ 
+-来源：[`packages/llm/llm/src/types.ts:161`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:162`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -5951,7 +5951,7 @@ SHA-256: `8e31bb958e9b015e6f8407eaade32217068159e816f3cc99c3ad76eb889732e0`
+ 
+ SHA-256: `693f4952fb5565da96c06bace8924b098ac2fbc915fde0ff8019701183abc057`
+ 
+-来源：[`packages/llm/llm/src/types.ts:162`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:163`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -6462,7 +6462,7 @@ SHA-256: `eaa71be0fbf0f702df8ea6c11d0aa2f9782263d45a10d0fb14eda662f4bfe04c`
+ 
+ SHA-256: `ab7ec5f9eb2c6dfacca5da4c37cf7ba85d04172053ee6b1ebf1709ffcd99c1a7`
+ 
+-来源：[`packages/core/session/src/types.ts:214`](../packages/core/session/src/types.ts) · [`packages/llm/llm/src/types.ts:160`](../packages/llm/llm/src/types.ts)
++来源：[`packages/core/session/src/types.ts:214`](../packages/core/session/src/types.ts) · [`packages/llm/llm/src/types.ts:161`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -6902,7 +6902,7 @@ SHA-256: `28936c614bd4e7e2774806edcbb3cbfd3ee643ac1cbf0bbdff43d915505a8fe3`
+ 
+ SHA-256: `1d76406cbb2ddadb0dbbb51e9d8bc6cf678fed455cf8eb512f36f7c86d37a62f`
+ 
+-来源：[`packages/llm/llm/src/types.ts:158`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:159`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -7070,7 +7070,7 @@ SHA-256: `49dab019d00e8c26f27ad2ccff7b604d69e323ae4d17e0d2a7b6b8a830b1ade2`
+ 
+ SHA-256: `287211846beea1eccb5f9acee00d20388a38fcb2e95858fa2332d6f58529379a`
+ 
+-来源：[`packages/llm/llm/src/types.ts:159`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:160`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -7714,7 +7714,7 @@ SHA-256: `1033093edd0db80ff410e00830b523405e00bb0c7684948e531ff65095799625`
+ 
+ SHA-256: `d4b739491689cc6bb13d07ffac1a32239875abda364c0d5edd8f74faf5e9c00d`
+ 
+-来源：[`packages/llm/llm/src/types.ts:445`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:452`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -7728,7 +7728,7 @@ SHA-256: `d4b739491689cc6bb13d07ffac1a32239875abda364c0d5edd8f74faf5e9c00d`
+ 
+ SHA-256: `3bec87f9e6ab3da03346f49923d3c51621debc0159df68605e543c3b2a026f90`
+ 
+-来源：[`packages/llm/llm/src/types.ts:441`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:448`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -7934,7 +7934,7 @@ SHA-256: `b54940ff095c17e874c5be03815f4c2145a256cf3a1d34dae4ab2f7769dfffe8`
+ 
+ SHA-256: `a2b49331716ba0a7078b026d145306a70eae64b7313c3e6204bd931e75ec3bb1`
+ 
+-来源：[`packages/llm/llm/src/types.ts:447`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:454`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -8108,7 +8108,7 @@ SHA-256: `71bb3254ec8f1e491ce63b762a7b5f18709de23aa4e8abcc8b886f4b6ce051dd`
+ 
+ SHA-256: `2abb711460e6238d851c30f3e4bdd87a2aa1887ee70575b3d3b7b25610673095`
+ 
+-来源：[`packages/llm/llm/src/types.ts:443`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:450`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -8428,7 +8428,7 @@ SHA-256: `e72269f931559e901e5e8fe1cfcbd0669fb795f43cc038ff39fba62f60403c33`
+ 
+ SHA-256: `95080295115fbd83544520ba247b68a03790131f6a2eac323d388758cb542f65`
+ 
+-来源：[`packages/llm/llm/src/types.ts:442`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:449`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -8476,7 +8476,7 @@ SHA-256: `3860b4757d512a2869be833acb0faf834335b1b056bf3f83df5474dce95f8fa6`
+ 
+ SHA-256: `88a610b831be6d92612a464be5c7d0b88ec24d97bd299837bf74bf7672183c9a`
+ 
+-来源：[`packages/llm/llm/src/types.ts:444`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:451`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+@@ -8654,7 +8654,7 @@ SHA-256: `aa0957eca50aeb28bcd2e6930b95809926edacb550c8c340ba526ba6b861b3d8`
+ 
+ SHA-256: `f1a96afe7503ac1817de769cd0ba13d9b80111c7034c50106b3344ecc14cc515`
+ 
+-来源：[`packages/llm/llm/src/types.ts:446`](../packages/llm/llm/src/types.ts)
++来源：[`packages/llm/llm/src/types.ts:453`](../packages/llm/llm/src/types.ts)
+ 
+ | 属性 | 存在性 | 类型 |
+ |---|---|---|
+diff --git a/docs/persistence-schema.json b/docs/persistence-schema.json
+index 4695717a2d..29e7524103 100644
+--- a/docs/persistence-schema.json
++++ b/docs/persistence-schema.json
+@@ -22477,7 +22477,7 @@
+         "packages/llm/llm/src/types.ts#ReplayEnvelope"
+       ],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:418"
++        "packages/llm/llm/src/types.ts:425"
+       ]
+     },
+     {
+@@ -25321,7 +25321,7 @@
+         "packages/llm/llm/src/types.ts#ImageBlock"
+       ],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:79"
++        "packages/llm/llm/src/types.ts:80"
+       ]
+     },
+     {
+@@ -30996,7 +30996,7 @@
+       },
+       "names": [],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:158"
++        "packages/llm/llm/src/types.ts:159"
+       ]
+     },
+     {
+@@ -32711,7 +32711,7 @@
+       },
+       "names": [],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:159"
++        "packages/llm/llm/src/types.ts:160"
+       ]
+     },
+     {
+@@ -33284,7 +33284,7 @@
+       },
+       "names": [],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:443"
++        "packages/llm/llm/src/types.ts:450"
+       ]
+     },
+     {
+@@ -36140,7 +36140,7 @@
+       },
+       "names": [],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:441"
++        "packages/llm/llm/src/types.ts:448"
+       ]
+     },
+     {
+@@ -42110,7 +42110,7 @@
+         "packages/llm/llm/src/types.ts#ToolRemovalBlock"
+       ],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:127"
++        "packages/llm/llm/src/types.ts:128"
+       ]
+     },
+     {
+@@ -43014,7 +43014,7 @@
+         "packages/llm/llm/src/types.ts#StreamChunk"
+       ],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:440"
++        "packages/llm/llm/src/types.ts:447"
+       ]
+     },
+     {
+@@ -44696,7 +44696,7 @@
+         "packages/llm/llm/src/types.ts#TextBlock"
+       ],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:62",
++        "packages/llm/llm/src/types.ts:63",
+         "packages/web/web-search-deepseek/src/provider.ts:66"
+       ]
+     },
+@@ -50614,7 +50614,7 @@
+         "packages/llm/llm/src/types.ts#FinishReason"
+       ],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:166"
++        "packages/llm/llm/src/types.ts:167"
+       ]
+     },
+     {
+@@ -51254,7 +51254,7 @@
+         "packages/llm/llm/src/types.ts#LlmFailure"
+       ],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:41"
++        "packages/llm/llm/src/types.ts:42"
+       ]
+     },
+     {
+@@ -54560,7 +54560,7 @@
+         "packages/llm/llm/src/types.ts#ToolSchema"
+       ],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:461"
++        "packages/llm/llm/src/types.ts:468"
+       ]
+     },
+     {
+@@ -58136,7 +58136,7 @@
+       },
+       "names": [],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:162"
++        "packages/llm/llm/src/types.ts:163"
+       ]
+     },
+     {
+@@ -60897,7 +60897,7 @@
+         "packages/llm/llm/src/types.ts#ContentBlockType"
+       ],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:149"
++        "packages/llm/llm/src/types.ts:150"
+       ]
+     },
+     {
+@@ -61484,7 +61484,7 @@
+         "packages/llm/llm/src/types.ts#ContentBlock"
+       ],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:151"
++        "packages/llm/llm/src/types.ts:152"
+       ]
+     },
+     {
+@@ -61584,7 +61584,7 @@
+         "packages/llm/llm/src/types.ts#ReasoningBlock"
+       ],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:68"
++        "packages/llm/llm/src/types.ts:69"
+       ]
+     },
+     {
+@@ -63183,7 +63183,7 @@
+       },
+       "names": [],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:444"
++        "packages/llm/llm/src/types.ts:451"
+       ]
+     },
+     {
+@@ -63650,7 +63650,7 @@
+       },
+       "names": [],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:161"
++        "packages/llm/llm/src/types.ts:162"
+       ]
+     },
+     {
+@@ -63697,7 +63697,7 @@
+         "packages/llm/llm/src/types.ts#ToolAdditionBlock"
+       ],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:115"
++        "packages/llm/llm/src/types.ts:116"
+       ]
+     },
+     {
+@@ -64253,7 +64253,7 @@
+       },
+       "names": [],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:442"
++        "packages/llm/llm/src/types.ts:449"
+       ]
+     },
+     {
+@@ -68976,7 +68976,7 @@
+       },
+       "names": [],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:447"
++        "packages/llm/llm/src/types.ts:454"
+       ]
+     },
+     {
+@@ -70340,7 +70340,7 @@
+       "names": [],
+       "sources": [
+         "packages/core/session/src/types.ts:214",
+-        "packages/llm/llm/src/types.ts:160"
++        "packages/llm/llm/src/types.ts:161"
+       ]
+     },
+     {
+@@ -73599,7 +73599,7 @@
+         "packages/llm/llm/src/types.ts#ToolCallBlock"
+       ],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:105"
++        "packages/llm/llm/src/types.ts:106"
+       ]
+     },
+     {
+@@ -77737,7 +77737,7 @@
+       },
+       "names": [],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:445"
++        "packages/llm/llm/src/types.ts:452"
+       ]
+     },
+     {
+@@ -87154,7 +87154,7 @@
+       },
+       "names": [],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:446"
++        "packages/llm/llm/src/types.ts:453"
+       ]
+     },
+     {
+@@ -87305,7 +87305,7 @@
+         "packages/llm/llm/src/types.ts#FileBlock"
+       ],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:98"
++        "packages/llm/llm/src/types.ts:99"
+       ]
+     },
+     {
+@@ -87323,7 +87323,7 @@
+         "packages/llm/llm/src/types.ts#SystemPromptUpdate"
+       ],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:397"
++        "packages/llm/llm/src/types.ts:404"
+       ]
+     },
+     {
+@@ -96946,7 +96946,7 @@
+         "packages/llm/llm/src/types.ts#TokenUsage"
+       ],
+       "sources": [
+-        "packages/llm/llm/src/types.ts:176"
++        "packages/llm/llm/src/types.ts:177"
+       ]
+     },
+     {
+diff --git a/docs/subsystems/llm-streaming.i18n.yaml b/docs/subsystems/llm-streaming.i18n.yaml
+index 757474dd41..3a24d0235f 100644
+--- a/docs/subsystems/llm-streaming.i18n.yaml
++++ b/docs/subsystems/llm-streaming.i18n.yaml
+@@ -2,5 +2,5 @@
+ # side as of the last confirmed-consistent state. Both languages carry equal authority;
+ # after editing either side, bring the other along and re-record with:
+ #   pnpm run verify-translation-pairing --write docs/subsystems/llm-streaming.md
+-llm-streaming.md: 07fc6599bc5d4eb5a4af9b566032004932052585
+-llm-streaming.zh.md: 079a33599d1e5169af6402db2b2abdd7dc978369
++llm-streaming.md: c1b491864dc3d74cd5251281ff034474622c8ef8
++llm-streaming.zh.md: c93ef20d149ef17a2fe4e3378b0c995900c50779
+diff --git a/docs/subsystems/llm-streaming.md b/docs/subsystems/llm-streaming.md
+index 07fc6599bc..c1b491864d 100644
+--- a/docs/subsystems/llm-streaming.md
++++ b/docs/subsystems/llm-streaming.md
+@@ -722,6 +722,12 @@ interface LlmDiscoveredModel {
+   id: string
+   /** Human-readable name when the endpoint supplies one. */
+   name?: string
++  /** Provider-supplied pricing or capability detail for discovery and selectors. */
++  description?: string
++  /** Adapter-owned model settings, validated by the adapter when the user adopts the candidate. */
++  configuration?: Record<string, JsonValue>
++  /** Why this live entry cannot be adopted by this adapter; absent means selectable. */
++  unavailableReason?: string
+   /** Maximum combined request and response context, when disclosed. */
+   contextWindow?: number
+   /** Maximum output tokens, when disclosed. */
+diff --git a/docs/subsystems/llm-streaming.zh.md b/docs/subsystems/llm-streaming.zh.md
+index 079a33599d..c93ef20d14 100644
+--- a/docs/subsystems/llm-streaming.zh.md
++++ b/docs/subsystems/llm-streaming.zh.md
+@@ -728,6 +728,12 @@ interface LlmDiscoveredModel {
+   id: string
+   /** Human-readable name when the endpoint supplies one. */
+   name?: string
++  /** Provider-supplied pricing or capability detail for discovery and selectors. */
++  description?: string
++  /** Adapter-owned model settings, validated by the adapter when the user adopts the candidate. */
++  configuration?: Record<string, JsonValue>
++  /** Why this live entry cannot be adopted by this adapter; absent means selectable. */
++  unavailableReason?: string
+   /** Maximum combined request and response context, when disclosed. */
+   contextWindow?: number
+   /** Maximum output tokens, when disclosed. */
+diff --git a/packages/client/ui-model-selection/README.i18n.yaml b/packages/client/ui-model-selection/README.i18n.yaml
+index 10481b46f8..8827fe0f28 100644
+--- a/packages/client/ui-model-selection/README.i18n.yaml
++++ b/packages/client/ui-model-selection/README.i18n.yaml
+@@ -2,5 +2,5 @@
+ # side as of the last confirmed-consistent state. Both languages carry equal authority;
+ # after editing either side, bring the other along and re-record with:
+ #   pnpm run verify-translation-pairing --write packages/client/ui-model-selection/README.md
+-README.md: 37253cf04242275f22d646da0e65cfd44f4fefbf
+-README.zh.md: 4e339e6a6c6db8c3125e6ccc19c0fc3af9947f88
++README.md: ffe663c483b1c1e4a42da119c5821a050d547e2d
++README.zh.md: 91500c994721cb8cdad08839f123587ea71672bb
+diff --git a/packages/client/ui-model-selection/README.md b/packages/client/ui-model-selection/README.md
+index 37253cf042..ffe663c483 100644
+--- a/packages/client/ui-model-selection/README.md
++++ b/packages/client/ui-model-selection/README.md
+@@ -25,6 +25,8 @@ The Web GUI lets users switch the model and reasoning effort for an existing ses
+ <a id="use-this-package"></a>
+ ## Use this package
+ 
++The model menu displays each provider-supplied model description beneath its name, including any published pricing and free-model labels.
++
+ Mount this plugin alongside `ui-conversation` and the commands package; the composer then shows the model seat next to the pending indicator, and `/model` opens the same directory as a popup. While the seat's menu is open, `↑`/`↓` move focus across the rows of the shown pane, Tab settles the focused row, and Escape and `Shift+Tab` leave a drilled pane first and otherwise close back to the trigger. Drilling lands on the row of the value in use, and going back lands on the cell that opened the pane left. Both surfaces show the host-reported current selection when the exact provider/model pair remains in the advertised groups; a missing catalog row leaves the routable selection intact while the trigger prompts `Select model`.
+ 
+ ### Model and effort
+diff --git a/packages/client/ui-model-selection/README.zh.md b/packages/client/ui-model-selection/README.zh.md
+index 4e339e6a6c..91500c9947 100644
+--- a/packages/client/ui-model-selection/README.zh.md
++++ b/packages/client/ui-model-selection/README.zh.md
+@@ -25,6 +25,8 @@ Web GUI 允许用户通过 `/model` 弹窗或 composer 模型控件切换既有
+ <a id="use-this-package"></a>
+ ## 使用本包
+ 
++模型菜单在名称下方展示提供方的模型描述，包括已发布费率和免费模型标记。
++
+ 与 `ui-conversation` 及命令包一起挂载本插件；composer 随即在待处理指示器旁显示模型位，`/model` 则以弹窗打开同一份目录。模型位菜单打开期间，`↑`／`↓` 在所显示面板的行间移动焦点，`Tab` 选定聚焦行，Escape 与 `Shift+Tab` 先退出已下钻的面板，否则关闭并回到触发器。下钻落在正在使用的那一行，返回则落在打开该面板的格子上。当确切提供方／模型对仍在已公布分组中时，两个界面都显示 Host 报告的当前选择；目录行缺席时，可路由的选择保持不变，触发器提示 `Select model`。
+ 
+ ### 模型与推理强度
+diff --git a/packages/client/ui-model-selection/src/client/ModelSelect.module.css b/packages/client/ui-model-selection/src/client/ModelSelect.module.css
+index b3a60fb6ec..cd545ee258 100644
+--- a/packages/client/ui-model-selection/src/client/ModelSelect.module.css
++++ b/packages/client/ui-model-selection/src/client/ModelSelect.module.css
+@@ -230,6 +230,15 @@
+   white-space: nowrap;
+ }
+ 
++.modelDescription {
++  display: block;
++  max-width: 32rem;
++  white-space: normal;
++  font-size: 11px;
++  line-height: 1.4;
++  opacity: 0.75;
++}
++
+ .check {
+   display: grid;
+   place-items: center;
+diff --git a/packages/client/ui-model-selection/src/client/ModelSelect.tsx b/packages/client/ui-model-selection/src/client/ModelSelect.tsx
+index b9c8993563..0df13ee173 100644
+--- a/packages/client/ui-model-selection/src/client/ModelSelect.tsx
++++ b/packages/client/ui-model-selection/src/client/ModelSelect.tsx
+@@ -424,12 +424,13 @@ export function ModelSelect(
+                             aria-checked={selected}
+                             className={clsx(css.option, selected && css.selected)}
+                             key={model.id}
+-                            title={model.name}
++                            title={model.description === undefined ? model.name : `${model.name}\n${model.description}`}
+                             disabled={busy}
+                             onClick={() => { choose({ provider: group.id, model: model.id }) }}
+                           >
+                             <span className={css.optionCopy}>
+                               <span className={css.modelName}>{model.name}</span>
++                              {model.description === undefined ? null : <small className={css.modelDescription}>{model.description}</small>}
+                             </span>
+                             <span className={css.check}>
+                               {selected ? <IconCheckOutlineRegular /> : null}
+diff --git a/packages/client/ui-model-selection/tests/model-select.client.spec.tsx b/packages/client/ui-model-selection/tests/model-select.client.spec.tsx
+index 4a5ee43b91..630914b6a8 100644
+--- a/packages/client/ui-model-selection/tests/model-select.client.spec.tsx
++++ b/packages/client/ui-model-selection/tests/model-select.client.spec.tsx
+@@ -140,8 +140,8 @@ describe('ModelSelect reasoning effort', () => {
+     expect(screen.queryByRole('menuitem', { name: /推理等级/ })).toBeNull()
+     fireEvent.click(screen.getByRole('menuitem', { name: /模型/ }))
+     expect(screen.queryByRole('menuitemradio', { name: 'removed-model' })).toBeNull()
+-    expect(screen.getByRole('menuitemradio', { name: 'DeepSeek-V4-Flash' })).toBeTruthy()
+-    expect(screen.queryByText('Fast catalog description')).toBeNull()
++    expect(screen.getByRole('menuitemradio', { name: /DeepSeek-V4-Flash/ })).toBeTruthy()
++    expect(screen.getByText('Fast catalog description')).toBeTruthy()
+   })
+ 
+   it('shows loading until the catalog and Session projection are both ready', async () => {
+diff --git a/packages/client/ui-settings-models/README.i18n.yaml b/packages/client/ui-settings-models/README.i18n.yaml
+index 8dcae71776..110128edaf 100644
+--- a/packages/client/ui-settings-models/README.i18n.yaml
++++ b/packages/client/ui-settings-models/README.i18n.yaml
+@@ -2,5 +2,5 @@
+ # side as of the last confirmed-consistent state. Both languages carry equal authority;
+ # after editing either side, bring the other along and re-record with:
+ #   pnpm run verify-translation-pairing --write packages/client/ui-settings-models/README.md
+-README.md: e0accf787aba9d2857887773b4f1a3d703fc1fc1
+-README.zh.md: 39b443c2293a9da0f7a82bc70d10539a2d153aa8
++README.md: 0d835225f28aa9459823201e9e94e0068142e6b2
++README.zh.md: 42a06372702fe92e0bf8b9ba24fdf461d5f55e72
+diff --git a/packages/client/ui-settings-models/README.md b/packages/client/ui-settings-models/README.md
+index e0accf787a..0d835225f2 100644
+--- a/packages/client/ui-settings-models/README.md
++++ b/packages/client/ui-settings-models/README.md
+@@ -25,6 +25,8 @@ English | [中文](README.zh.md)
+ <a id="use-this-package"></a>
+ ## Use this package
+ 
++Discovery candidates and saved model rows display provider-supplied descriptions, including OpenCode rates. Adoption preserves adapter configuration such as per-model protocol and endpoint. Candidates with an unavailable reason remain visible but cannot be selected, including through Select all.
++
+ Open the Models page from the Settings navigation to see every configured provider as a row. A whole-section provider whose key is not configured anywhere renders as its open setup card instead, but only in the first-run posture and only until the user closes that card. Each card kind owns its own open state, so closing one never discards a draft in another.
+ 
+ A provider with a stored catalog error remains visible with its diagnostic and edit/delete actions. Add actions are offered only for registered settings namespaces, so an unavailable namespace cannot leave a button that opens no editor. A rejected save leaves the editor open and displays the Host diagnostic.
+@@ -41,7 +43,7 @@ The collapsed 自定义设置 fold carries the curated extras: `baseURL` for bot
+ 
+ The DeepSeek card edits the `llm-deepseek` endpoint, credentials, and model catalog. It uses Messages, with the default endpoint placeholder `https://api.deepseek.com/anthropic`.
+ 
+-Expand **Customized settings → Model options** to edit each model. Both provider families share the same row layout, labels, and icons: context window and max output tokens occupy two columns, and **Input types** occupies a separate row with **Text** and **Image** checkboxes. A row without an input declaration displays the installed model’s input types, then the provider default, then Text. Known pi-ai providers load their installed catalog without endpoint I/O; opening a row does not write an override. Explicit input selections take precedence, including text-only overrides of vision models. Checkbox edits save the selected types, with at least one type required. DeepSeek writes `inputModalities`; pi-ai writes `input`. Unchecking Image for DeepSeek also removes `imagePixelBudget` and `imageMaxBytes`, because the adapter rejects those limits without image input. Clearing the input field in `cordis.patch.yml` restores adapter inheritance; **Restore default models** resets the entire catalog override. Declare only input types the upstream model can actually process.
++Expand **Customized settings → Model options** to edit each model. Both provider families share the same row layout, labels, and icons: context window and max output tokens occupy two columns, and **Input types** occupies a separate row with **Text** and **Image** checkboxes. A row without an input declaration displays the installed model’s input types, then the provider default, then Text. Known pi-ai providers load catalog metadata through discovery; opening a row does not write an override. Explicit input selections take precedence, including text-only overrides of vision models. Checkbox edits save the selected types, with at least one type required. DeepSeek writes `inputModalities`; pi-ai writes `input`. Unchecking Image for DeepSeek also removes `imagePixelBudget` and `imageMaxBytes`, because the adapter rejects those limits without image input. Clearing the input field in `cordis.patch.yml` restores adapter inheritance; **Restore default models** resets the entire catalog override. Declare only input types the upstream model can actually process.
+ 
+ ### Adding and deleting providers
+ 
+diff --git a/packages/client/ui-settings-models/README.zh.md b/packages/client/ui-settings-models/README.zh.md
+index 39b443c229..42a0637270 100644
+--- a/packages/client/ui-settings-models/README.zh.md
++++ b/packages/client/ui-settings-models/README.zh.md
+@@ -25,6 +25,8 @@ kind: "package-reference"
+ <a id="use-this-package"></a>
+ ## 使用本包
+ 
++发现候选与已存模型行展示提供方描述，包括 OpenCode 费率。采纳保留适配器配置，例如逐模型协议和端点。带不可用原因的候选仍可见，但不能选中，全选也会排除这些条目。
++
+ 从设置导航打开 Models 页面，即可看到每个已配置的提供商都有一行。其配置键未在任何位置配置的整分节提供商会渲染为其展开的设置卡片而非一行，但仅限首次运行姿态，且仅持续到用户关闭该卡片为止。每一类卡片各自持有自己的展开状态，因此关掉其中一张绝不会丢弃另一张里的草稿。
+ 
+ 存在已存储目录错误的提供商仍显示诊断以及编辑、删除入口。添加操作只面向已注册的 settings 命名空间，因此不可用的命名空间不会留下无法打开编辑器的按钮。保存被拒绝时，编辑器保持打开并展示 Host 诊断。
+@@ -41,7 +43,7 @@ Host 配置 `credentialOnboarding` 默认为 `true`。Electron preload 标记会
+ 
+ `llm-deepseek` 的 DeepSeek 卡片编辑端点、凭据和模型目录。它使用 Messages，默认端点占位符为 `https://api.deepseek.com/anthropic`。
+ 
+-展开**自定义设置 → 模型选项**编辑模型。两个提供商家族共用相同的模型行布局、标签和图标：上下文窗口与最大输出 token 数分为两列，**输入类型**独占下一行，提供**文本**和**图片**复选框。未声明输入类型的模型行优先显示已安装模型的输入类型，其次是提供商默认值，最后回退为文本。已知 pi-ai 提供商会加载已安装目录，不向端点发送请求；打开模型行不会写入覆盖值。显式输入选择具有优先权，包括为视觉模型设置的仅文本覆盖。修改复选框会保存所选类型，且至少保留一种。DeepSeek 写入 `inputModalities`，pi-ai 写入 `input`。DeepSeek 取消勾选图片时，还会移除 `imagePixelBudget` 和 `imageMaxBytes`，因为适配器在没有图片输入时拒绝这些限制。在 `cordis.patch.yml` 中清除输入字段可恢复适配器继承；**恢复默认模型**会重置整个模型目录覆盖。仅声明上游模型实际能够处理的输入类型。
++展开**自定义设置 → 模型选项**编辑模型。两个提供商家族共用相同的模型行布局、标签和图标：上下文窗口与最大输出 token 数分为两列，**输入类型**独占下一行，提供**文本**和**图片**复选框。未声明输入类型的模型行优先显示已安装模型的输入类型，其次是提供商默认值，最后回退为文本。已知 pi-ai 提供商通过发现加载目录元数据；打开模型行不会写入覆盖值。显式输入选择具有优先权，包括为视觉模型设置的仅文本覆盖。修改复选框会保存所选类型，且至少保留一种。DeepSeek 写入 `inputModalities`，pi-ai 写入 `input`。DeepSeek 取消勾选图片时，还会移除 `imagePixelBudget` 和 `imageMaxBytes`，因为适配器在没有图片输入时拒绝这些限制。在 `cordis.patch.yml` 中清除输入字段可恢复适配器继承；**恢复默认模型**会重置整个模型目录覆盖。仅声明上游模型实际能够处理的输入类型。
+ 
+ ### 新增与删除提供商
+ 
+diff --git a/packages/client/ui-settings-models/src/client/ModelListEditor.tsx b/packages/client/ui-settings-models/src/client/ModelListEditor.tsx
+index cfab83e8d9..3504f73c98 100644
+--- a/packages/client/ui-settings-models/src/client/ModelListEditor.tsx
++++ b/packages/client/ui-settings-models/src/client/ModelListEditor.tsx
+@@ -65,7 +65,7 @@ export interface ProbeTarget {
+ export interface ModelListEditorProps {
+   /** The rows as currently drafted. */
+   models: readonly ModelDraft[]
+-  /** Installed provider whose catalog supplies defaults without endpoint I/O. */
++  /** Provider whose discovered catalog supplies defaults. */
+   catalogProvider?: string | undefined
+   /** Route input types for models absent from the installed catalog. */
+   defaultInput?: readonly string[] | undefined
+@@ -132,8 +132,10 @@ function capacitySpelling(value: number | undefined): string {
+ /** Adopt a candidate, preserving disclosed capacities and input types. */
+ function adopt(candidate: LlmDiscoveredModel): ModelDraft {
+   return {
++    ...candidate.configuration,
+     id: candidate.id,
+     ...candidate.name === undefined ? {} : { name: candidate.name },
++    ...candidate.description === undefined ? {} : { description: candidate.description },
+     ...candidate.contextWindow === undefined ? {} : { contextWindow: candidate.contextWindow },
+     ...candidate.maxTokens === undefined ? {} : { maxTokens: candidate.maxTokens },
+     ...candidate.inputModalities === undefined ? {} : { input: [...candidate.inputModalities] },
+@@ -256,7 +258,7 @@ export function ModelListEditor(props: ModelListEditorProps): ReactNode {
+       const known = new Set(models.map(model => textOf(model, 'id')))
+       setCandidateQuery('')
+       setCandidates(found)
+-      setPicked(new Set(found.filter(model => !known.has(model.id)).map(model => model.id)))
++      setPicked(new Set(found.filter(model => model.unavailableReason === undefined && !known.has(model.id)).map(model => model.id)))
+     } finally {
+       setBusy(false)
+     }
+@@ -273,12 +275,15 @@ export function ModelListEditor(props: ModelListEditorProps): ReactNode {
+     if (candidates === undefined) return
+     const byId = new Map(models.map(model => [textOf(model, 'id'), model]))
+     for (const candidate of candidates) {
+-      if (!picked.has(candidate.id)) continue
++      if (!picked.has(candidate.id) || candidate.unavailableReason !== undefined) continue
+       // A row the user already tuned wins over the provider's own numbers.
+       // Keyed by id, so a half-typed row whose id is still empty is not a
+       // match and the candidate joins as its own row — correct, since a row
+       // without an id is not yet a model and the create/apply gates refuse it.
+-      byId.set(candidate.id, byId.get(candidate.id) ?? adopt(candidate))
++      byId.set(candidate.id, {
++        ...adopt(candidate), ...byId.get(candidate.id), ...candidate.configuration,
++        ...candidate.description === undefined ? {} : { description: candidate.description },
++      })
+     }
+     onChange([...byId.values()])
+     closePicker()
+@@ -298,16 +303,19 @@ export function ModelListEditor(props: ModelListEditorProps): ReactNode {
+     ? activeCandidates
+     : activeCandidates.filter(candidate => candidate.id.toLowerCase().includes(normalizedCandidateQuery)
+       || candidate.name?.toLowerCase().includes(normalizedCandidateQuery) === true)
+-  const allVisibleCandidatesPicked = visibleCandidates.length > 0
+-    && visibleCandidates.every(candidate => picked.has(candidate.id))
++  const selectableCandidates = visibleCandidates.filter(candidate => candidate.unavailableReason === undefined)
++  const allVisibleCandidatesPicked = selectableCandidates.length > 0
++    && selectableCandidates.every(candidate => picked.has(candidate.id))
+ 
+   const toggleVisibleCandidates = (): void => {
+     setPicked((current) => {
+-      if (visibleCandidates.every(candidate => current.has(candidate.id))) {
++      if (selectableCandidates.every(candidate => current.has(candidate.id))) {
+         return new Set()
+       }
+       const next = new Set(current)
+-      for (const candidate of visibleCandidates) next.add(candidate.id)
++      for (const candidate of selectableCandidates) {
++        if (candidate.unavailableReason === undefined) next.add(candidate.id)
++      }
+       return next
+     })
+   }
+@@ -429,7 +437,7 @@ export function ModelListEditor(props: ModelListEditorProps): ReactNode {
+           <Button
+             variant="ghost"
+             size="sm"
+-            disabled={visibleCandidates.length === 0}
++            disabled={selectableCandidates.length === 0}
+             onClick={toggleVisibleCandidates}
+           >
+             {t(allVisibleCandidatesPicked ? 'fetchDeselectAll' : 'fetchSelectAll')}
+@@ -445,12 +453,15 @@ export function ModelListEditor(props: ModelListEditorProps): ReactNode {
+                     <input
+                       type="checkbox"
+                       checked={picked.has(candidate.id)}
++                      disabled={candidate.unavailableReason !== undefined}
+                       onChange={() => { toggle(candidate.id) }}
+                     />
+                     <span className={styles['candidateName']} title={candidate.name ?? candidate.id}>
+                       {candidate.name ?? candidate.id}
+                     </span>
+                   </label>
++                  {candidate.description === undefined ? null : <small>{candidate.description}</small>}
++                  {candidate.unavailableReason === undefined ? null : <small role="status">{candidate.unavailableReason}</small>}
+                 </li>
+               ))}
+             </ul>
+diff --git a/packages/client/ui-settings-models/src/client/ModelRow.tsx b/packages/client/ui-settings-models/src/client/ModelRow.tsx
+index b1c76adf8d..aa943c255c 100644
+--- a/packages/client/ui-settings-models/src/client/ModelRow.tsx
++++ b/packages/client/ui-settings-models/src/client/ModelRow.tsx
+@@ -83,6 +83,7 @@ export function ModelRow(props: ModelRowProps): ReactNode {
+           <IconTrashOutlineRegular size={14} />
+         </button>
+       </div>
++      {typeof model['description'] === 'string' ? <small>{model['description']}</small> : null}
+       {props.expanded
+         ? (
+           <div className={styles['modelAdvanced']}>
+diff --git a/packages/client/ui-settings-models/tests/model-list-catalog.client.spec.tsx b/packages/client/ui-settings-models/tests/model-list-catalog.client.spec.tsx
+index a0034f2f7c..349f8361e6 100644
+--- a/packages/client/ui-settings-models/tests/model-list-catalog.client.spec.tsx
++++ b/packages/client/ui-settings-models/tests/model-list-catalog.client.spec.tsx
+@@ -105,3 +105,31 @@ it('restores inherited image input after a failed catalog read is retried manual
+   expect(discover).toHaveBeenCalledTimes(2)
+   expect(onChange).not.toHaveBeenCalled()
+ })
++
++
++it('shows rates, excludes unsupported entries, and adopts per-model transport while preserving tuned capacity', async () => {
++  const onChange = vi.fn()
++  const description = 'Free (current rate) · USD/1M tokens: input $0 · output $0'
++  render(<ModelListEditor
++    models={[{ id: 'free-model', contextWindow: 90000 }]} onChange={onChange}
++    probe={{ settingsNs: 'llm-pi-ai', provider: 'opencode' }} disabled={false} t={key => en[key]} onBusyChange={() => {}}
++    operations={operations(() => Promise.resolve({ kind: 'found', models: [
++      { id: 'free-model', name: 'Free Model', description, contextWindow: 100000,
++        configuration: { api: 'anthropic-messages', baseURL: 'https://opencode.ai/zen' } },
++      { id: 'decision', name: 'Decision Model', unavailableReason: 'Not a chat protocol' },
++    ] }))}
++  />)
++  fireEvent.click(screen.getByRole('button', { name: en.fetchModels }))
++  const picker = await screen.findByRole('dialog', { name: en.fetchTitle })
++  expect(within(picker).getByText(description).textContent).toMatchInlineSnapshot(
++    '"Free (current rate) · USD/1M tokens: input $0 · output $0"',
++  )
++  expect(within(picker).getByRole<HTMLInputElement>('checkbox', { name: 'Decision Model' }).disabled).toBe(true)
++  fireEvent.click(within(picker).getByRole('button', { name: en.fetchSelectAll }))
++  expect(within(picker).getByRole('button', { name: en.fetchDeselectAll })).toBeTruthy()
++  fireEvent.click(within(picker).getByRole('button', { name: en.fetchAdopt }))
++  expect(onChange).toHaveBeenCalledExactlyOnceWith([{
++    id: 'free-model', name: 'Free Model', contextWindow: 90000, description,
++    api: 'anthropic-messages', baseURL: 'https://opencode.ai/zen',
++  }])
++})
+diff --git a/packages/extensions/tool-cordis/src/api-catalog.ts b/packages/extensions/tool-cordis/src/api-catalog.ts
+index 4bf22eef0d..9e0bcdb8ec 100644
+--- a/packages/extensions/tool-cordis/src/api-catalog.ts
++++ b/packages/extensions/tool-cordis/src/api-catalog.ts
+@@ -5315,7 +5315,7 @@ export const TYPE_API: readonly TypeApiEntry[] = [
+   },
+   {
+     name: 'LlmDiscoveredModel',
+-    declaration: 'export interface LlmDiscoveredModel {\n    id: string;\n    name?: string;\n    contextWindow?: number;\n    maxTokens?: number;\n    inputModalities?: readonly ModelModality[];\n}',
++    declaration: 'export interface LlmDiscoveredModel {\n    id: string;\n    name?: string;\n    description?: string;\n    configuration?: Record<string, JsonValue>;\n    unavailableReason?: string;\n    contextWindow?: number;\n    maxTokens?: number;\n    inputModalities?: readonly ModelModality[];\n}',
+   },
+   {
+     name: 'LlmFailure',
+diff --git a/packages/llm/llm-pi-ai/README.i18n.yaml b/packages/llm/llm-pi-ai/README.i18n.yaml
+index c5fbc218d7..f47aa3a866 100644
+--- a/packages/llm/llm-pi-ai/README.i18n.yaml
++++ b/packages/llm/llm-pi-ai/README.i18n.yaml
+@@ -2,5 +2,5 @@
+ # side as of the last confirmed-consistent state. Both languages carry equal authority;
+ # after editing either side, bring the other along and re-record with:
+ #   pnpm run verify-translation-pairing --write packages/llm/llm-pi-ai/README.md
+-README.md: 7b1708b957202369382d8a93b2bbcefd31565f67
+-README.zh.md: ed780ad235b1d8df2b821be6a0595ecd8b8e951b
++README.md: a13ff0a23c3cd4d6e51322fb9fea7313c48aac5d
++README.zh.md: f23bc3ad84885865529253bfca7fbde03303b5e2
+diff --git a/packages/llm/llm-pi-ai/README.md b/packages/llm/llm-pi-ai/README.md
+index 7b1708b957..a13ff0a23c 100644
+--- a/packages/llm/llm-pi-ai/README.md
++++ b/packages/llm/llm-pi-ai/README.md
+@@ -90,6 +90,8 @@ Each profile may set a `retryPolicy`; omission uses normal mode with five retrie
+ 
+ The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-llm-pi-ai) is the exhaustive source for every accepted field and its JSDoc.
+ 
++External adapter plugins can use `PiAiAdapter`, `resolvePiAiProfiles` and `PiAiAdapterOptions.requestHeaders` to reuse transport conversion with request-local headers. Dynamic headers replace case-insensitive profile headers; Harness attribution remains reserved. `excludedProviders` releases the named built-in directory entries to other plugins and rejects routes that remain configured in this plugin.
++
+ ### Sign in to a provider
+ 
+ A provider pi-ai ships a login for can be signed into through the harness authorization seam: the flow offers OAuth or an interactive key prompt (a key is typed into pi-ai's own login prompt, not into the settings form), and the resulting credential is stored in the harness credential store at `llm-pi-ai/<provider id>`. The stored sign-in authenticates its route beneath any `apiKeyEnv` override and refreshes itself under the store's cross-process lock; signing out deletes the stored record. A hand-declared route key outside the record grammar — a lowercase hyphenated identifier — cannot be signed into, because a record write for it refuses with `LlmError('UNSTORABLE_PROVIDER_ID')`; such a route authenticates through `apiKeyEnv` or ambient provider settings instead.
+@@ -110,7 +112,10 @@ Each operation captures the current `providers` Config reference. New or changed
+ 
+ ### Discover models from endpoints
+ 
+-The plugin answers "which models can this provider serve?" for a route a configuration surface is editing or drafting. A route the installed catalog ships is answered from that catalog with no network call, preserving its `input` array as discovery `inputModalities`; only a route the catalog does not describe is interrogated over the wire. `openai-completions` and `openai-responses` use `GET {baseURL}/models` with bearer auth, while `anthropic-messages` uses native `GET /v1/models?limit=1000` semantics with `x-api-key` and `anthropic-version`; its listing URL accepts the API root with or without a trailing `/v1` because gateway documentation publishes both spellings, and only that listing URL normalizes the segment, so model requests receive the configured `baseURL` unchanged. A named configured route supplies its stored credential and profile `headers` inside the Host, so deployment headers configured through `cordis.patch.yml` or Cordis config reach model discovery without becoming discovery-request or Models-page fields; a key typed into the form still wins over the stored credential. The parser accepts either the standard `data` array or an enriched `models` map, normalizing each candidate's id, display name, context window, and output-token cap; Anthropic's `max_input_tokens` and `max_tokens` feed the same capacity fields, a map key remains the request id even when its entry names a different canonical id, primitive-valued map properties are ignored, and a missing display name falls back to that request id. The reply is candidate metadata a surface may offer for adoption — nothing is stored, and `cordis.patch.yml` remains the only thing that decides what a route serves.
++The plugin answers "which models can this provider serve?" for a route a configuration surface is editing or drafting. A route the installed catalog ships is answered from that catalog with no network call, preserving its `input` array as discovery `inputModalities`; other routes are interrogated over the wire. `openai-completions` and `openai-responses` use `GET {baseURL}/models` with bearer auth, while `anthropic-messages` uses native `GET /v1/models?limit=1000` semantics with `x-api-key` and `anthropic-version`; its listing URL accepts the API root with or without a trailing `/v1` because gateway documentation publishes both spellings, and only that listing URL normalizes the segment, so model requests receive the configured `baseURL` unchanged. A named configured route supplies its stored credential and profile `headers` inside the Host, so deployment headers configured through `cordis.patch.yml` or Cordis config reach model discovery without becoming discovery-request or Models-page fields; a key typed into the form still wins over the stored credential. The parser accepts either the standard `data` array or an enriched `models` map, normalizing each candidate's id, display name, context window, and output-token cap; Anthropic's `max_input_tokens` and `max_tokens` feed the same capacity fields, a map key remains the request id even when its entry names a different canonical id, primitive-valued map properties are ignored, and a missing display name falls back to that request id. The reply is candidate metadata a surface may offer for adoption — nothing is stored, and `cordis.patch.yml` remains the only thing that decides what a route serves.
++
++
++Discovery entries can carry adapter `configuration`, a user-facing `description`, and an `unavailableReason`. Per-model `api` and `baseURL` override catalog defaults; an explicit route-level `api` still constrains all models to that protocol. Adoption persists model metadata; provider-specific plugins own dynamic pricing and catalog refresh.
+ 
+ ### Failures and recovery
+ 
+@@ -222,7 +227,7 @@ These limits define where the adapter stops and future work begins. They are cur
+ - **`headers` can carry a credential the redactor never sees** — profile resolution rejects names and values Fetch cannot represent, but the dict remains plain strings; store credentials as `apiKeyEnv` references.
+ - **Discovery does not change configured models** — adopt discovery results explicitly into the route configuration.
+ - **Anthropic discovery reads at most 1,000 models** — the request uses the API's maximum page size but does not traverse `has_more`; entries beyond the first page must be added by hand.
+-- **One wire protocol per route** — a mixed-protocol catalog route cannot host a model of the other protocol; splitting the provider across two route keys is the workaround.
++- **An explicit route protocol constrains every model** — omit it when per-model protocols are intended to differ.
+ - **A modality declaration is not verified** — a model declaring `image` its gateway does not serve is refused by the provider after prompt admission. The durable image remains in history and the same misdeclared model can fail again; switching to a text-only model remains possible because the shared LLM runtime projects image references into stable text for that request.
+ - **An unauthenticated route depends on its protocol** — a route naming no credential resolves as configured-but-keyless, but pi-ai's OpenAI-compatible implementation still requires an API key or an `Authorization` header, so a keyless local server needs a placeholder credential referenced by `apiKeyEnv` or an `Authorization` entry in `headers`.
+ - **`GenerateOptions.stop` is unsupported** — pi-ai's common stream options cannot guarantee stop-sequence behavior across providers.
+diff --git a/packages/llm/llm-pi-ai/README.zh.md b/packages/llm/llm-pi-ai/README.zh.md
+index ed780ad235..f23bc3ad84 100644
+--- a/packages/llm/llm-pi-ai/README.zh.md
++++ b/packages/llm/llm-pi-ai/README.zh.md
+@@ -90,6 +90,8 @@ kind: "package-reference"
+ 
+ 生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-llm-pi-ai)是每个受支持字段及其 JSDoc 的穷尽式真源。
+ 
++外部适配器插件可以使用 `PiAiAdapter`、`resolvePiAiProfiles` 和 `PiAiAdapterOptions.requestHeaders`，复用传输转换并提供逐请求标头。动态标头覆盖 profile 中不区分大小写的同名标头，Harness 归属标头仍保留。`excludedProviders` 将指定的内置目录条目交给其他插件；仍在本插件配置中的同名路由会被拒绝。
++
+ ### 登录提供方
+ 
+ pi-ai 提供登录的提供方可以通过 harness 授权 seam 登录：流程提供 OAuth 或交互式密钥提示（密钥键入 pi-ai 自己的登录提示，而非设置表单），得到的凭据存储在 harness 凭据存储的 `llm-pi-ai/<provider id>` 记录中。存储的登录在其路由的 `apiKeyEnv` 覆盖之下完成认证，并在存储的跨进程锁下自行刷新；退出登录即删除存储记录。落在记录文法之外——小写连字符标识符——的手工声明路由键无法登录，因为对它的记录写入会以 `LlmError('UNSTORABLE_PROVIDER_ID')` 拒绝；这类路由改用 `apiKeyEnv` 或提供方 ambient 设置认证。
+@@ -110,7 +112,10 @@ profile 的 `models` 列表会替换而非扩展路由的已安装目录；每
+ 
+ ### 从端点发现模型
+ 
+-插件会回答「该提供方可以提供哪些模型？」，供配置界面正在编辑或起草的路由使用。已安装目录提供的路由直接由目录回答，不发网络请求，并将其 `input` 数组保留为发现结果的 `inputModalities`；只有目录未描述的路由才会经网络询问。`openai-completions` 与 `openai-responses` 使用带 bearer 鉴权的 `GET {baseURL}/models`，`anthropic-messages` 则以 `x-api-key` 和 `anthropic-version` 使用原生 `GET /v1/models?limit=1000` 语义；其列表 URL 接受带或不带末尾 `/v1` 的 API 根地址，因为网关文档两种写法都会发布，且只有该列表 URL 会归一化这一段，模型请求收到的仍是配置原样的 `baseURL`。已配置且具名的路由会在 Host 内部提供已存凭据与 profile `headers`，因此通过 `cordis.patch.yml` 或 Cordis 配置设置的部署标头可以到达模型发现请求，但不会成为发现请求或 Models 页面的字段；表单中新键入的密钥仍优先于已存凭据。解析器接受标准 `data` 数组或富信息 `models` 对象，并归一化每个候选的 id、显示名、上下文窗口与最大输出 token 数；Anthropic 的 `max_input_tokens` 与 `max_tokens` 会进入相同容量字段，即使对象条目点名了另一个规范 id，对象键仍是请求 id，原始类型的对象属性会被忽略，缺失的显示名则回退到该请求 id。回答是界面可以提供给用户采纳的候选元数据——不存储任何内容，`cordis.patch.yml` 仍然是决定路由服务内容的唯一事实。
++插件会回答「该提供方可以提供哪些模型？」，供配置界面正在编辑或起草的路由使用。已安装目录提供的路由直接由目录回答，不发网络请求，并将其 `input` 数组保留为发现结果的 `inputModalities`；其余路由会经网络询问。`openai-completions` 与 `openai-responses` 使用带 bearer 鉴权的 `GET {baseURL}/models`，`anthropic-messages` 则以 `x-api-key` 和 `anthropic-version` 使用原生 `GET /v1/models?limit=1000` 语义；其列表 URL 接受带或不带末尾 `/v1` 的 API 根地址，因为网关文档两种写法都会发布，且只有该列表 URL 会归一化这一段，模型请求收到的仍是配置原样的 `baseURL`。已配置且具名的路由会在 Host 内部提供已存凭据与 profile `headers`，因此通过 `cordis.patch.yml` 或 Cordis 配置设置的部署标头可以到达模型发现请求，但不会成为发现请求或 Models 页面的字段；表单中新键入的密钥仍优先于已存凭据。解析器接受标准 `data` 数组或富信息 `models` 对象，并归一化每个候选的 id、显示名、上下文窗口与最大输出 token 数；Anthropic 的 `max_input_tokens` 与 `max_tokens` 会进入相同容量字段，即使对象条目点名了另一个规范 id，对象键仍是请求 id，原始类型的对象属性会被忽略，缺失的显示名则回退到该请求 id。回答是界面可以提供给用户采纳的候选元数据——不存储任何内容，`cordis.patch.yml` 仍然是决定路由服务内容的唯一事实。
++
++
++发现条目可以携带适配器 `configuration`、面向用户的 `description` 和 `unavailableReason`。逐模型 `api` 与 `baseURL` 覆盖目录默认值，显式路由级 `api` 仍限制所有模型使用该协议。采纳会保存模型元数据；供应商专用插件负责动态费率和目录刷新。
+ 
+ ### 失败与恢复
+ 
+@@ -222,7 +227,7 @@ pi-ai 事件变成 harness 的推理、文本、工具调用、用量与 finish
+ - **`headers` 可以携带 redactor 永远看不到的凭据**——profile 解析会拒绝 Fetch 无法表示的名称与值，但该字典仍是纯字符串；以 `apiKeyEnv` 引用存储凭据。
+ - **发现操作不更改已配置模型**——需显式将发现结果采纳到路由配置中。
+ - **Anthropic 模型发现最多读取 1,000 个模型**——请求使用 API 的最大页大小，但不会遍历 `has_more`；第一页之外的条目需要手工添加。
+-- **每条路由一种协议格式**——混合协议目录路由无法承载另一协议格式的模型；把提供方拆到两个路由键是变通办法。
++- **显式路由协议约束全部模型**——需要逐模型使用不同协议时，省略路由级协议覆盖。
+ - **模态声明不受校验**——声明 `image` 而其网关不支持的模型会在提示词准入后被提供方拒绝。持久图片仍留在历史中，同一误声明模型可能再次失败；切换到纯文本模型仍然可行，因为共享 LLM 运行时会针对该请求把图片引用投影为稳定文本。
+ - **未认证路由取决于其协议**——不点名凭据的路由解析为已配置但无密钥，但 pi-ai 的 OpenAI 兼容实现仍要求 API 密钥或 `Authorization` 标头，因此无密钥本地服务器需要由 `apiKeyEnv` 引用或 `headers` 中的 `Authorization` 条目提供的占位凭据。
+ - **不支持 `GenerateOptions.stop`**——pi-ai 的通用流式选项无法跨提供方保证停止序列行为。
+diff --git a/packages/llm/llm-pi-ai/src/adapter.ts b/packages/llm/llm-pi-ai/src/adapter.ts
+index de9f3e0e42..304cd57370 100644
+--- a/packages/llm/llm-pi-ai/src/adapter.ts
++++ b/packages/llm/llm-pi-ai/src/adapter.ts
+@@ -92,6 +92,8 @@ export interface PiAiAdapterOptions {
+    * every request no matter how often the human signed in.
+    */
+   auth: PiAiAuthInjection
++  /** Additional per-call headers; override profile headers but never Harness attribution. */
++  requestHeaders?: (options: GenerateOptions) => Readonly<Record<string, string>>
+   /** Resolve the optional durable attachment service at request time. */
+   resolveAttachments?: () => AttachmentStore | undefined
+   /** Bridge one attachment reference into the current model-tool execution world. */
+@@ -201,13 +203,21 @@ function reasoningInfo(
+   }
+ }
+ 
+-/** Merge deployment headers while removing case-insensitive attribution collisions. */
+-function requestHeaders(headers: Readonly<Record<string, string>> | undefined): Record<string, string> {
++/** Merge per-call headers over profile values while reserving Harness attribution. */
++function requestHeaders(
++  headers: Readonly<Record<string, string>> | undefined,
++  callHeaders: Readonly<Record<string, string>> | undefined,
++): Record<string, string> {
+   const attribution = attributionHeaders()
+-  const reserved = new Set(Object.keys(attribution).map(name => name.toLowerCase()))
++  const owned = new Set(Object.keys(attribution).map(name => name.toLowerCase()))
++  const dynamic = {
++    ...Object.fromEntries(Object.entries(callHeaders ?? {}).filter(([name]) => !owned.has(name.toLowerCase()))),
++    ...attribution,
++  }
++  const reserved = new Set(Object.keys(dynamic).map(name => name.toLowerCase()))
+   return {
+     ...Object.fromEntries(Object.entries(headers ?? {}).filter(([name]) => !reserved.has(name.toLowerCase()))),
+-    ...attribution,
++    ...dynamic,
+   }
+ }
+ 
+@@ -276,13 +286,17 @@ export class PiAiAdapter extends LlmAdapter {
+   override listModels(provider: string): Promise<readonly LlmModelInfo[]> {
+     return Promise.resolve().then(() => {
+       const snapshot = this.current()
+-      this.profileOf(snapshot, provider)
+-      return snapshot.models.getModels(provider).map(model => ({
+-        provider,
+-        id: model.id,
+-        name: model.name,
+-        inputModalities: [...model.input],
+-      }))
++      const profile = this.profileOf(snapshot, provider)
++      return snapshot.models.getModels(provider).map((model) => {
++        const description = profile.modelDescriptions.get(model.id)
++        return {
++          provider,
++          id: model.id,
++          name: model.name,
++          ...description === undefined ? {} : { description },
++          inputModalities: [...model.input],
++        }
++      })
+     })
+   }
+ 
+@@ -383,9 +397,7 @@ export class PiAiAdapter extends LlmAdapter {
+         ...options.maxTokens === undefined ? {} : { maxTokens: options.maxTokens },
+         ...options.sessionId === undefined ? {} : { sessionId: String(options.sessionId) },
+         signal: watchdog.signal,
+-        // Profile headers are deployment-owned; attribution names are
+-        // Harness-owned and therefore win collisions.
+-        headers: requestHeaders(profile.headers),
++        headers: requestHeaders(profile.headers, this.config.requestHeaders?.(options)),
+       })
+       const iterator = toStreamChunks(events, model.contextWindow, options.signal, model.id)[Symbol.asyncIterator]()
+       let exhausted = false
+diff --git a/packages/llm/llm-pi-ai/src/catalog.ts b/packages/llm/llm-pi-ai/src/catalog.ts
+index 191c77c0d2..25b2427fcb 100644
+--- a/packages/llm/llm-pi-ai/src/catalog.ts
++++ b/packages/llm/llm-pi-ai/src/catalog.ts
+@@ -576,6 +576,12 @@ export interface PiAiModelProfile {
+   id: string
+   /** Display name for selectors; defaults to the catalog name, then the id. */
+   name?: string
++  /** Provider pricing or capability detail shown by model selectors. */
++  description?: string
++  /** This model's wire protocol; overrides route and installed-catalog defaults. */
++  api?: string
++  /** This model's endpoint root; overrides route and installed-catalog defaults. */
++  baseURL?: string
+   /** Maximum combined request and response context in tokens. */
+   contextWindow?: number
+   /**
+@@ -885,12 +891,12 @@ export function resolveRouteModels(
+     if (seen.has(entry.id)) invalid(provider, `lists model "${entry.id}" more than once`)
+     seen.add(entry.id)
+     const base = defaults.get(entry.id)
+-    const api = request.api ?? base?.api ?? routeApi
++    const api = entry.api ?? request.api ?? base?.api ?? routeApi
+     if (api === undefined) {
+       invalid(provider, `model "${entry.id}" needs an api; the installed catalog does not describe it, so set the`
+         + ' route\'s api to the wire protocol its endpoint speaks')
+     }
+-    const baseUrl = request.baseURL ?? base?.baseUrl ?? providerBaseUrl
++    const baseUrl = entry.baseURL ?? request.baseURL ?? base?.baseUrl ?? providerBaseUrl
+     if (baseUrl === undefined) {
+       invalid(provider, `model "${entry.id}" needs a baseURL; the installed catalog does not describe this route`)
+     }
+diff --git a/packages/llm/llm-pi-ai/src/config.ts b/packages/llm/llm-pi-ai/src/config.ts
+index b07cd57bfb..2edde4bf5a 100644
+--- a/packages/llm/llm-pi-ai/src/config.ts
++++ b/packages/llm/llm-pi-ai/src/config.ts
+@@ -187,6 +187,8 @@ export interface ResolvedPiAiProviderProfile
+   extends Omit<PiAiProviderProfile, 'apiKeyEnv' | 'retryPolicy' | 'models' | 'displayName'> {
+   /** Harness route key and the `Models` collection key (the configuration dict key). */
+   provider: string
++  /** Configured per-model descriptions, including refreshed provider pricing. */
++  modelDescriptions: ReadonlyMap<string, string>
+   /** Resolved display name for selectors and configuration surfaces. */
+   displayName: string
+   /** Validated credential reference, when one is configured. */
+@@ -226,6 +228,8 @@ export interface Config {
+    * and registers them the moment a settings section supplies profiles.
+    */
+   providers: Volatile<Record<string, PiAiProviderProfile>>
++  /** Catalog routes delegated to another adapter plugin; must not also be configured here. */
++  excludedProviders: Volatile<string[]>
+ }
+ 
+ /** Plain options accepted by the provider resolver. */
+@@ -302,6 +306,9 @@ const reasoningEfforts = z.dict(
+ /** The fields a `models` entry and a `modelOverrides` value share; only the id's home differs. */
+ const modelFields = {
+   name: z.string(),
++  description: z.string(),
++  api: z.string(),
++  baseURL: z.string(),
+   contextWindow: z.number().step(1).min(1),
+   maxTokens: z.number().step(1).min(1),
+   // No explicit default, unlike the route's `defaultInput`: schemastery
+@@ -351,6 +358,7 @@ const profile = z.object({
+ /** Runtime schema for {@link Config}. */
+ export const Config = z.object({
+   providers: z.dict(profile).default({}).volatile(),
++  excludedProviders: z.array(z.string().min(1)).default([]).volatile(),
+ })
+ 
+ /**
+@@ -492,6 +500,8 @@ export function resolveProfiles(
+       ...rest,
+       provider,
+       displayName,
++      modelDescriptions: new Map((source.models ?? Object.entries(source.modelOverrides ?? {}).map(([id, value]) => ({ id, ...value })))
++        .flatMap(model => model.description === undefined ? [] : [[model.id, model.description]])),
+       ...apiKeyEnv === undefined ? {} : { apiKeyEnv: credentialRef(apiKeyEnv) },
+       streamIdleTimeoutMs,
+       maxRequestImageBytes,
+diff --git a/packages/llm/llm-pi-ai/src/index.ts b/packages/llm/llm-pi-ai/src/index.ts
+index 389acba7cc..e3558a37b1 100644
+--- a/packages/llm/llm-pi-ai/src/index.ts
++++ b/packages/llm/llm-pi-ai/src/index.ts
+@@ -74,8 +74,8 @@ import type { StoredModelDiscoveryProfile } from './discovery.ts'
+ import { registerPiAiFlows } from './login.ts'
+ 
+ export { PiAiAdapter } from './adapter.ts'
+-export type { PiAiAdapterOptions } from './adapter.ts'
+-export { Config } from './config.ts'
++export type { PiAiAdapterOptions, PiAiAuthInjection } from './adapter.ts'
++export { Config, resolveProfiles as resolvePiAiProfiles } from './config.ts'
+ export type {
+   Options,
+   PiAiCompatProfile,
+@@ -124,6 +124,7 @@ function registrationFacts(profiles: ReadonlyMap<string, ResolvedPiAiProviderPro
+ function directoryEntries(
+   profiles: ReadonlyMap<string, ResolvedPiAiProviderProfile>,
+   settingsNs: string,
++  excluded: readonly string[],
+ ): LlmConfigurableProvider[] {
+   const catalog = new Set(catalogProviderIds())
+   const entries = new Map<string, LlmConfigurableProvider>()
+@@ -140,7 +141,7 @@ function directoryEntries(
+       ...error === undefined ? {} : { error },
+     })
+   }
+-  for (const provider of catalog) declare(provider, provider)
++  for (const provider of catalog) { if (!excluded.includes(provider)) declare(provider, provider) }
+   for (const [provider, profile] of profiles) declare(provider, profile.displayName, profile.catalogError)
+   return [...entries.values()]
+ }
+@@ -162,6 +163,9 @@ export function apply(ctx: Context, config: Config): void {
+    */
+   const profiles = (): ReadonlyMap<string, ResolvedPiAiProviderProfile> => {
+     const raw = config.providers.get()
++    for (const provider of config.excludedProviders.get()) {
++      if (provider in raw) throw new LlmError(`llm-pi-ai: excluded provider "${provider}" is still configured`, 'INVALID_CONFIG')
++    }
+     if (raw === lastRaw && memoized !== undefined) return memoized
+     const next = resolveProfiles(structuredClone(raw) as import('./config.ts').Options['providers'], 'deferred')
+     lastRaw = raw
+@@ -173,6 +177,9 @@ export function apply(ctx: Context, config: Config): void {
+     const raw: unknown = next()
+     if (this !== ctx.fiber) return raw
+     const candidate = Config(raw as import('./config.ts').Options)
++    for (const provider of candidate.excludedProviders.get()) {
++      if (provider in candidate.providers.get()) throw new LlmError(`llm-pi-ai: excluded provider "${provider}" is still configured`, 'INVALID_CONFIG')
++    }
+     assertServiceable(
+       { providers: structuredClone(candidate.providers.get()) } as import('./config.ts').Options,
+       { providers: structuredClone(config.providers.get()) } as import('./config.ts').Options,
+@@ -239,7 +246,7 @@ export function apply(ctx: Context, config: Config): void {
+   let directory: DirectoryRegistrationHandle | undefined
+   let directoryFacts: unknown
+   const ensureDirectory = (): void => {
+-    const entries = directoryEntries(profiles(), settingsNs)
++    const entries = directoryEntries(profiles(), settingsNs, config.excludedProviders.get())
+     if (deepEqualJson(entries, directoryFacts)) return
+     // Atomic replace, never dispose-then-register: a route another adapter
+     // family already declares (a profile keyed `deepseek-official`) would
+diff --git a/packages/llm/llm-pi-ai/src/provider.ts b/packages/llm/llm-pi-ai/src/provider.ts
+index 9a851f6ef8..2bc3172265 100644
+--- a/packages/llm/llm-pi-ai/src/provider.ts
++++ b/packages/llm/llm-pi-ai/src/provider.ts
+@@ -169,7 +169,13 @@ export function buildProvider(spec: ProviderSpec): Provider {
+   // A catalog route keeping its catalog protocol reuses the catalog provider;
+   // an explicit protocol means the deployment is repointing the route at a
+   // different wire format, which only the protocol table can serve.
+-  if (catalog !== undefined && spec.api === undefined) return reuseCatalogProvider(catalog, spec)
++  if (catalog !== undefined && spec.api === undefined) {
++    const apis = new Set(catalog.getModels().map(model => model.api))
++    for (const model of spec.models) {
++      if (!apis.has(model.api)) throw new PiAiCatalogError(`llm-pi-ai: provider "${spec.provider}" cannot serve model "${model.id}" api "${model.api}"`)
++    }
++    return reuseCatalogProvider(catalog, spec)
++  }
+ 
+   // Every model on this path carries the route's protocol: model resolution
+   // requires one for a route the catalog cannot default, and an explicit one
+@@ -181,6 +187,9 @@ export function buildProvider(spec: ProviderSpec): Provider {
+       + ` supported protocols are ${supportedProtocols().join(', ')}`,
+     )
+   }
++  for (const model of spec.models) {
++    if (model.api !== spec.api) throw new PiAiCatalogError(`llm-pi-ai: provider "${spec.provider}" requires model "${model.id}" to use route api "${spec.api}"`)
++  }
+   return createProvider({
+     id: spec.provider,
+     name: spec.displayName,
+diff --git a/packages/llm/llm-pi-ai/tests/dynamic-config.spec.ts b/packages/llm/llm-pi-ai/tests/dynamic-config.spec.ts
+index ee0faca3ca..2ac8ae6cb9 100644
+--- a/packages/llm/llm-pi-ai/tests/dynamic-config.spec.ts
++++ b/packages/llm/llm-pi-ai/tests/dynamic-config.spec.ts
+@@ -310,3 +310,14 @@ describe('request-level dynamic profiles', () => {
+     expect(ctx.llm.listProviders().map(provider => provider.id)).toEqual(before)
+   })
+ })
++
++describe('external adapter directory ownership', () => {
++  it('excludes reserved catalog routes and rejects configuring an excluded route before updating', async () => {
++    const ctx = await boot(await home(), { excludedProviders: ['opencode-go', 'opencode'] })
++    expect(ctx.llm.listConfigurableProviders().some(entry => entry.provider.startsWith('opencode'))).toBe(false)
++    await expect(configurations.get(ctx)!.update({ providers: { 'opencode-go': {} } })).rejects.toThrow('is still configured')
++    expect(ctx.llm.listProviders()).toEqual([])
++    await configurations.get(ctx)!.replace({ providers: { 'opencode-go': {} }, excludedProviders: [] })
++    expect(ctx.llm.listProviders().map(entry => entry.id)).toEqual(['opencode-go'])
++  })
++})
+diff --git a/packages/llm/llm/README.i18n.yaml b/packages/llm/llm/README.i18n.yaml
+index dbc3bd15e7..b07c37acf9 100644
+--- a/packages/llm/llm/README.i18n.yaml
++++ b/packages/llm/llm/README.i18n.yaml
+@@ -2,5 +2,5 @@
+ # side as of the last confirmed-consistent state. Both languages carry equal authority;
+ # after editing either side, bring the other along and re-record with:
+ #   pnpm run verify-translation-pairing --write packages/llm/llm/README.md
+-README.md: 04de24592379dcb0d815f3b033ca2f9f22e2ff6a
+-README.zh.md: bee35d4a0b62dd61a61b435dfc4eb27b62cdce69
++README.md: 5cfc4638a1f790069d240a76d10a250560d19cdd
++README.zh.md: 73cc20be77326d6b19ec22d48808e5e854d7b9da
+diff --git a/packages/llm/llm/README.md b/packages/llm/llm/README.md
+index 04de245923..5cfc4638a1 100644
+--- a/packages/llm/llm/README.md
++++ b/packages/llm/llm/README.md
+@@ -25,6 +25,8 @@ Use `@deepseek-ai/dsh-llm` to stream model calls through configured provider ada
+ <a id="use-this-package"></a>
+ ## Use this package
+ 
++Model discovery may return a provider description, JSON adapter configuration to retain during adoption, and an unavailable reason for entries that cannot be adopted. Consumers preserve this metadata; the adapter owns its interpretation.
++
+ Any composition that calls a model provider — an agent loop, a session-title generator, a compaction summarizer — streams its requests through this service. Mount it together with at least one provider adapter; the service itself has no configuration and no provider wire code.
+ 
+ ### When to choose it
+diff --git a/packages/llm/llm/README.zh.md b/packages/llm/llm/README.zh.md
+index bee35d4a0b..73cc20be77 100644
+--- a/packages/llm/llm/README.zh.md
++++ b/packages/llm/llm/README.zh.md
+@@ -25,6 +25,8 @@ kind: "package-reference"
+ <a id="use-this-package"></a>
+ ## 使用本包
+ 
++模型发现可以返回提供方描述、采纳时保留的 JSON 适配器配置，以及不可采纳条目的原因。消费者保留这些元数据，其含义由适配器负责。
++
+ 任何调用模型提供方的组合——agent loop（智能体循环）、会话标题生成器、压缩（compaction）摘要器——都会通过本服务流式发起请求。与至少一个提供方适配器一起挂载它；服务本身没有任何配置，也不包含提供方协议代码。
+ 
+ ### 何时选择
+diff --git a/packages/llm/llm/src/index.ts b/packages/llm/llm/src/index.ts
+index 5f633619ff..8fc7b6db9b 100644
+--- a/packages/llm/llm/src/index.ts
++++ b/packages/llm/llm/src/index.ts
+@@ -612,6 +612,9 @@ export class LlmRuntime extends TypertRemoteService {
+       seen.add(model.id)
+       models.push({
+         id: model.id,
++        ...model.description === undefined ? {} : { description: model.description },
++        ...model.configuration === undefined ? {} : { configuration: structuredClone(model.configuration) },
++        ...model.unavailableReason === undefined ? {} : { unavailableReason: model.unavailableReason },
+         ...model.name === undefined ? {} : { name: model.name },
+         ...model.contextWindow === undefined ? {} : { contextWindow: model.contextWindow },
+         ...model.maxTokens === undefined ? {} : { maxTokens: model.maxTokens },
+diff --git a/packages/llm/llm/src/types.ts b/packages/llm/llm/src/types.ts
+index dcd66d2868..dc45c60c0e 100644
+--- a/packages/llm/llm/src/types.ts
++++ b/packages/llm/llm/src/types.ts
+@@ -5,6 +5,7 @@
+  */
+ 
+ import type { Branded } from '@deepseek-ai/dsh-brand'
++import type { JsonValue } from '@deepseek-ai/dsh-util-values'
+ import type { FileAttachmentRef, ImageAttachmentRef } from '@deepseek-ai/dsh-attachment'
+ import type { ToolCallId, ProviderRequestId, ReasoningEffortId } from './brand.ts'
+ import type { Message, UserMessage } from './message.ts'
+@@ -319,6 +320,12 @@ export interface LlmDiscoveredModel {
+   id: string
+   /** Human-readable name when the endpoint supplies one. */
+   name?: string
++  /** Provider-supplied pricing or capability detail for discovery and selectors. */
++  description?: string
++  /** Adapter-owned model settings, validated by the adapter when the user adopts the candidate. */
++  configuration?: Record<string, JsonValue>
++  /** Why this live entry cannot be adopted by this adapter; absent means selectable. */
++  unavailableReason?: string
+   /** Maximum combined request and response context, when disclosed. */
+   contextWindow?: number
+   /** Maximum output tokens, when disclosed. */

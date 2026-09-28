@@ -1,0 +1,3 @@
+- insert:
+    - id: opencode-go
+      name: "@foreveryu/dsh-opencode-go"

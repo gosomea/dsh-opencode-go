@@ -1,0 +1,31 @@
+/** User-facing OpenCode catalog copy. */
+export const zh = {
+  noMatches: '没有符合搜索或筛选条件的模型。',
+  title: 'OpenCode Go / Zen', refresh: '刷新目录与费率', refreshing: '正在刷新…',
+  search: '搜索模型 ID 或名称', free: '仅显示零费率模型', empty: '暂无模型。请在插件配置中添加 OpenCode 提供方及凭据引用。',
+  observed: '上次成功刷新', warning: '零费率不代表无限额度或第三方调用权限。Go 订阅参考费率与 Zen 按量计费分开展示。',
+  name: '模型', route: '提供方', price: '费率 / 可用性', error: '刷新失败；保留上次成功目录',
+  protocol: '协议', unknown: '未确认', count: '个条目',
+  freeRate: '零费率', goRate: 'Go 参考费率', zenRate: 'Zen 费率',
+  input: '输入', output: '输出', cacheRead: '缓存读取', cacheWrite: '缓存写入',
+  rateUnit: 'USD / 百万 tokens', restricted: '第三方调用可能受 OpenCode 限制',
+  hoverHint: '悬停模型行查看详情', modelId: '模型 ID', source: '来源',
+  contextWindow: '上下文', maxTokens: '最大输出', unavailable: '暂不能用于聊天',
+  goBilling: 'Go 费率仅供参考，不代表订阅额度。', freeWarning: '零费率不代表无限额度或调用权限。',
+  tiered: '更高上下文档位可能采用不同费率。',
+}
+export const en: Record<keyof typeof zh, string> = {
+  noMatches: 'No models match this search or filter.',
+  title: 'OpenCode Go / Zen', refresh: 'Refresh models and rates', refreshing: 'Refreshing…',
+  search: 'Search model ID or name', free: 'Zero-price models only', empty: 'No models. Configure OpenCode providers and credential references in plugin settings.',
+  observed: 'Last successful refresh', warning: 'Zero price does not guarantee unlimited quota or third-party access. Go subscription reference rates are separate from Zen pay-as-you-go billing.',
+  name: 'Model', route: 'Provider', price: 'Rates / availability', error: 'Refresh failed; retaining the last successful catalog',
+  protocol: 'Protocol', unknown: 'Unverified', count: 'entries',
+  freeRate: 'Zero rate', goRate: 'Go reference rate', zenRate: 'Zen rate',
+  input: 'Input', output: 'Output', cacheRead: 'Cache read', cacheWrite: 'Cache write',
+  rateUnit: 'USD / million tokens', restricted: 'Third-party access may be restricted by OpenCode',
+  hoverHint: 'Hover a model row for details', modelId: 'Model ID', source: 'Source',
+  contextWindow: 'Context', maxTokens: 'Max output', unavailable: 'Unavailable for chat',
+  goBilling: 'Go reference rates do not represent subscription quota.', freeWarning: 'Zero price does not guarantee unlimited quota or access.',
+  tiered: 'Higher context tiers may have different rates.',
+}

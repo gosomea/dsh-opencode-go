@@ -1,0 +1,39 @@
+[
+  {
+    "provider": "deepseek-codebuddy",
+    "model": "deepseek-v4.1-flash",
+    "finish": {
+      "kind": "stop"
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "OK"
+      }
+    ],
+    "usage": {
+      "inputTokens": 45,
+      "outputTokens": 18,
+      "totalTokens": 63
+    }
+  },
+  {
+    "provider": "opencode-go",
+    "model": "space-bunny-free",
+    "finish": {
+      "kind": "stop"
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "OK"
+      }
+    ],
+    "usage": {
+      "inputTokens": 16,
+      "outputTokens": 18,
+      "totalTokens": 183,
+      "cacheReadTokens": 149
+    }
+  }
+]

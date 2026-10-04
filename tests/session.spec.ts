@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import type { GenerateOptions } from '@deepseek-ai/dsh-llm'
 import { PiAiAdapter } from '@deepseek-ai/dsh-llm-pi-ai'
 import { sessionHeaders } from '../src/index.ts'
-import { resolvePiAiProfiles as resolveProfiles, type PiAiProviderProfile } from '@deepseek-ai/dsh-llm-pi-ai'
+import { resolveProfiles, type PiAiProviderProfile } from '../src/provider.ts'
 import { memoryAuth } from './auth-double.ts'
 import { closeMockServers, mockServer, textEvents } from './mock-server.ts'
 
@@ -13,7 +13,7 @@ afterEach(closeMockServers)
 function adapterOf(provider: string, profile: PiAiProviderProfile): PiAiAdapter {
   const profiles = resolveProfiles({ [provider]: profile })
   return new PiAiAdapter({
-    profiles: () => profiles, requestHeaders: sessionHeaders,
+    profiles: () => profiles,
     resolveApiKey: () => Promise.resolve('test-key'),
     auth: memoryAuth(),
   })
@@ -88,4 +88,20 @@ it.each([
   await drain(adapter, 'opencode-go', 'adopted-session')
   expect(server.paths).toEqual([path])
   expect(server.headers[0]?.['x-opencode-session']).toBe('adopted-session')
+})
+
+it('keeps concurrent calls and mixed model protocols on their own endpoints', async () => {
+  const a = await mockServer([{ events: textEvents }])
+  const b = await mockServer([{ status: 400, body: '{"error":{"message":"probe"}}' }])
+  const profiles = resolveProfiles({ opencode: { models: [
+    { id: 'a', api: 'openai-completions', baseURL: a.url },
+    { id: 'b', api: 'anthropic-messages', baseURL: b.url },
+  ] } })
+  const adapter = new PiAiAdapter({ profiles: () => profiles, resolveApiKey: async () => 'test-key', auth: memoryAuth() })
+  const execute = (model: string) => Array.fromAsync(adapter.stream({ provider: 'opencode', model, messages: [], sessionId: `session-${model}` as NonNullable<GenerateOptions['sessionId']> }))
+  await Promise.all([execute('a'), execute('b')])
+  expect(a.paths).toEqual(['/chat/completions'])
+  expect(b.paths).toEqual(['/v1/messages?beta=true'])
+  expect(a.headers[0]?.['x-opencode-session']).toBe('session-a')
+  expect(b.headers[0]?.['x-opencode-session']).toBe('session-b')
 })

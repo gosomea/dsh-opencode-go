@@ -1,7 +1,7 @@
 /** Live OpenCode membership joined by exact id with documented protocols and provider metadata. */
 
 import { attributionHeaders, LlmError } from '@deepseek-ai/dsh-llm'
-import type { LlmDiscoveredModel } from '@deepseek-ai/dsh-llm'
+import type { LlmDiscoveredModel } from './provider.ts'
 import type { JsonValue } from '@deepseek-ai/dsh-util-values'
 import { getBuiltinModels } from '@earendil-works/pi-ai/providers/all'
 import type { BuiltinProvider } from '@earendil-works/pi-ai/providers/all'

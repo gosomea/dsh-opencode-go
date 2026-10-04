@@ -3,7 +3,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { discoverOpenCodeModels } from '../src/discovery.ts'
 const discoverModels = (request: { provider: 'opencode' | 'opencode-go'; baseURL?: string; apiKey?: string }) => discoverOpenCodeModels(request.provider)
-import { resolvePiAiProfiles as resolveProfiles } from '@deepseek-ai/dsh-llm-pi-ai'
+import { resolveProfiles, OpenCodeAdapter } from '../src/provider.ts'
 import { PiAiAdapter } from '@deepseek-ai/dsh-llm-pi-ai'
 import { memoryAuth } from './auth-double.ts'
 
@@ -49,11 +49,12 @@ describe('OpenCode live discovery', () => {
     const paid = candidates.find(model => model.id === 'new-paid')
     expect(paid?.configuration).toMatchObject({ api: 'anthropic-messages', baseURL: base.slice(0, -3) })
     const available = candidates.filter(model => model.unavailableReason === undefined)
-    const profiles = resolveProfiles({ [provider]: { models: available.map(model => ({
+    const inputs = { [provider]: { models: available.map(model => ({
       ...model.configuration, id: model.id, name: model.name!, description: model.description!,
       contextWindow: model.contextWindow!, maxTokens: model.maxTokens!, input: ['text'],
-    })) } })
-    const adapter = new PiAiAdapter({ profiles: () => profiles, resolveApiKey: () => Promise.resolve('key'), auth: memoryAuth() })
+    })) } }
+    const profiles = resolveProfiles(inputs)
+    const adapter = new OpenCodeAdapter({ profiles: () => profiles, resolveApiKey: () => Promise.resolve('key'), auth: memoryAuth() }, () => inputs)
     expect((await adapter.listModels(provider)).find(model => model.id === 'new-paid')?.description).toBe(paid?.description)
     expect(candidates.find(model => model.id === 'jev-1.13-free')?.unavailableReason).toMatch(/System One/)
     expect(candidates.find(model => model.id === 'unverified-alias')?.unavailableReason).toMatch(/No verified/)

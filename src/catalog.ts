@@ -2,8 +2,8 @@
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
 import { randomUUID } from 'node:crypto'
-import type { LlmDiscoveredModel } from '@deepseek-ai/dsh-llm'
-import { resolvePiAiProfiles as resolveProfiles, type PiAiModelProfile, type PiAiProviderProfile } from '@deepseek-ai/dsh-llm-pi-ai'
+import type { LlmDiscoveredModel } from './provider.ts'
+import { resolveProfiles, type PiAiModelProfile, type PiAiProviderProfile } from './provider.ts'
 import { discoverOpenCodeModels } from './discovery.ts'
 
 /** Canonical provider ids preserve the model identities in existing Sessions. */

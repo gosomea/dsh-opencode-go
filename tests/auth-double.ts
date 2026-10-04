@@ -1,5 +1,5 @@
 import type { Credential } from '@earendil-works/pi-ai'
-import type { PiAiAuthInjection } from '@deepseek-ai/dsh-llm-pi-ai'
+import type { PiAiAuthInjection } from '../src/provider.ts'
 
 /**
  * The auth injectables for tests that exercise streaming rather than

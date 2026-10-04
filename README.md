@@ -4,12 +4,14 @@ Live OpenCode Go and Zen catalogs for DeepSeek Harness, including current token 
 
 ## Compatibility and installation
 
-This source plugin requires the generic Host extensions described in [Host compatibility](docs/host-compatibility.md). It is tested against the locally patched DeepSeek Harness source checkout, not an unmodified public release. Node must satisfy `^22.19 || >=24`.
+Version 0.1.1 targets unmodified DeepSeek Harness 0.2.0-rc.2 through public provider APIs; see [Host compatibility](docs/host-compatibility.md) and [rc.2 verification](docs/rc2-verification.md). Version 0.1.0 required local Host extensions. Node must satisfy `^22.19 || >=24`.
 
-Install the published package into a compatible Host:
+For this source revision, build and pack the plugin, then install the generated tarball into the target Host. npm 0.1.0 remains the older patched-Host build until 0.1.1 is published:
 
 ```sh
-dsh plugin --profile web add @foreveryu/dsh-opencode-go@0.1.0
+npm run build
+npm pack
+dsh plugin --profile web add file:/absolute/path/foreveryu-dsh-opencode-go-0.1.1.tgz@0.1.0
 ```
 
 The unscoped npm name belongs to a different author. This project publishes only under `@foreveryu/dsh-opencode-go`. For an existing Go/Zen configuration, run the migration script from the installed package after reviewing its dry run.
@@ -34,7 +36,7 @@ node /absolute/path/to/dsh-opencode-go/scripts/migrate.mjs --home /absolute/path
 
 The migration requires an existing `llm-pi-ai` profile patch. It moves configured `opencode-go` and `opencode` routes, retaining credential references, request settings and capability overrides that differ from current discovered metadata. Removed/unsupported model overrides remain stored but are not offered as live models. It backs up the exact original profile, detects intervening edits, and replaces the patch atomically. It never reads API key values. A dry run refreshes only the public catalog cache. Custom provider endpoints or protocol overrides require review before migration. Install into a dedicated home first when rebuilding the Host.
 
-For a new installation, configure `opencode-go.providers` with `opencode-go: { apiKeyEnv: OPENCODE_GO_API_KEY }` and/or `opencode: { apiKeyEnv: OPENCODE_API_KEY }`. Add the same route IDs to `llm-pi-ai.excludedProviders`; remove their old generic-provider settings. Resolve those credential references through DSH credentials or the Host environment. An unconfigured plugin is dormant. The plugin's generated settings page exposes configuration; existing credential references continue to work.
+For a new installation, configure `opencode-go.providers` with `opencode-go: { apiKeyEnv: OPENCODE_GO_API_KEY }` and/or `opencode: { apiKeyEnv: OPENCODE_API_KEY }`. Remove these routes from the generic `llm-pi-ai.providers` settings. Do not add `excludedProviders`: the official Host does not support it. Resolve those credential references through DSH credentials or the Host environment. An unconfigured plugin is dormant. The plugin's generated settings page exposes configuration; built-in OpenCode directory entries still point to native settings, so edit plugin-owned credentials and tuning through this plugin's settings instead; existing credential references continue to work.
 
 ## Use
 
@@ -86,4 +88,4 @@ The public documentation table is parsed as static HTML. An incompatible upstrea
 
 The accompanying [skill](skills/dsh-opencode-go/SKILL.md) describes refresh, repair and migration. Enable it by linking that directory under `$DSH_HOME/skills/dsh-opencode-go`, after checking an existing target. It is not enabled merely by being present in the package.
 
-To roll back, restore the migration's exact `cordis.patch.yml` backup while the Host is idle, then remove the plugin with `dsh plugin --profile web remove @foreveryu/dsh-opencode-go`. Restoring the backup reassigns the canonical provider routes and removes their exclusion. Keep the backup until verification is complete; do not restore over unrelated later profile edits without merging them. The public cache can remain or be deleted independently.
+To roll back, restore the migration's exact `cordis.patch.yml` backup while the Host is idle, then remove the plugin with `dsh plugin --profile web remove @foreveryu/dsh-opencode-go`. Restoring the backup reassigns the canonical provider routes without changing Host source. Keep the backup until verification is complete; do not restore over unrelated later profile edits without merging them. The public cache can remain or be deleted independently.

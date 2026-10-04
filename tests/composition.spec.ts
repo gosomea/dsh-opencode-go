@@ -27,7 +27,7 @@ it('loads a file through Loader, exposes refreshed rates, excludes duplicate dir
   vi.stubGlobal('fetch', request)
   await writeFile(join(root, 'cordis.yml'), JSON.stringify([
     { id: 'llm', name: 'cordis:llm' },
-    { id: 'llm-pi-ai', name: 'cordis:pi', config: { excludedProviders: ['opencode-go', 'opencode'] } },
+    { id: 'llm-pi-ai', name: 'cordis:pi' },
     { id: 'opencode-go', name: 'cordis:opencode', config: { providers: { 'opencode-go': { apiKeyEnv: 'TEST_KEY' } }, cachePath: cache, refreshIntervalMs: 0 } },
   ]))
   ctx = new Context()
@@ -38,9 +38,9 @@ it('loads a file through Loader, exposes refreshed rates, excludes duplicate dir
   await ctx.loader.await()
   await vi.waitFor(async () => { expect(await ctx!.llm.listModels('opencode-go')).toMatchObject([{ id: 'fixture-free', description: expect.stringContaining('input $0') }]) })
   expect(JSON.parse(await readFile(cache, 'utf8')).providers['opencode-go']).toHaveLength(1)
-  expect(ctx.llm.listConfigurableProviders().filter(x => x.provider === 'opencode-go')).toMatchObject([{ settingsNs: 'opencode-go' }])
-  expect(ctx.llm.listConfigurableProviders().filter(x => x.provider === 'opencode')).toEqual([])
-  expect(await ctx.llm.discoverModels('opencode-go', { provider: 'opencode-go' })).toMatchObject([{ description: expect.stringContaining('input $0'), configuration: { api: 'openai-completions' } }])
+  expect(ctx.llm.listConfigurableProviders().filter(x => x.provider === 'opencode-go')).toMatchObject([{ settingsNs: 'llm-pi-ai' }])
+  expect(ctx.llm.listConfigurableProviders().filter(x => x.provider === 'opencode')).toMatchObject([{ settingsNs: 'llm-pi-ai' }])
+  expect(await ctx.llm.discoverModels('opencode-go', { provider: 'opencode-go' })).toMatchObject([{ id: 'fixture-free', contextWindow: 10000 }])
   await [...ctx.registry.get(OpenCode)!.fibers][0]!.dispose()
   expect(ctx.llm.listProviders()).toEqual([])
   expect(ctx.llm.listConfigurableProviders().some(x => x.settingsNs === 'opencode-go')).toBe(false)

@@ -4,12 +4,14 @@
 
 ## 安装与兼容性
 
-当前版本依赖[通用 Host 扩展](docs/host-compatibility.md)，已面向本机修改后的 DSH 源码验证，尚不能承诺未经修改的官方版本开箱即用。Node 要求 `^22.19 || >=24`。
+0.1.1 使用官方 DSH 0.2.0-rc.2 的公开 API，协议分派与会话请求头由插件实现，无需修改 Host；0.1.0 才依赖旧源码扩展。详见[兼容性说明](docs/host-compatibility.md)和[本轮验收记录](docs/rc2-verification.md)。Node 要求 `^22.19 || >=24`。
 
-兼容 Host 可直接安装已发布的包：
+本次源码适配先构建、打包，再把生成的 tarball 安装到目标 Host。npm 0.1.0 仍是需要旧 Host 补丁的版本；0.1.1 的发布需要另外完成：
 
 ```sh
-dsh plugin --profile web add @foreveryu/dsh-opencode-go@0.1.0
+npm run build
+npm pack
+dsh plugin --profile web add file:/absolute/path/foreveryu-dsh-opencode-go-0.1.1.tgz@0.1.0
 ```
 
 npm 未加 scope 的同名包属于其他作者，本项目仅发布为 `@foreveryu/dsh-opencode-go`。已有 Go / Zen 配置时，从安装后的包目录运行迁移脚本，先核对预演结果。源码开发和迁移示例：
@@ -25,9 +27,9 @@ node /absolute/path/to/dsh-opencode-go/scripts/migrate.mjs --home /absolute/path
 node /absolute/path/to/dsh-opencode-go/scripts/migrate.mjs --home /absolute/path/to/.dsh --profile web --apply
 ```
 
-命令使用目标源码 checkout 的 `dsh` 和实际 `DSH_HOME`。先在独立 home 验证，重编译 Host 时还需独立源码副本。迁移要求已有 `llm-pi-ai` profile patch，将 Go / Zen 配置及凭据引用移到插件，并让通用适配器释放对应目录；保留与实时元数据不同的显式能力设置。已下架或不支持的模型覆盖仍保留在配置中，但不会冒充实时可用模型。脚本备份原始文件、检查并发编辑、原子替换，不读取密钥值。默认预演只更新公共缓存；自定义 endpoint/api 必须先人工核对。
+命令使用目标源码 checkout 的 `dsh` 和实际 `DSH_HOME`。先在独立 home 验证，重编译 Host 时还需独立源码副本。迁移要求已有 `llm-pi-ai` profile patch，将 Go / Zen 配置及凭据引用移到插件，并移除通用适配器中的对应路由配置；保留与实时元数据不同的显式能力设置。已下架或不支持的模型覆盖仍保留在配置中，但不会冒充实时可用模型。脚本备份原始文件、检查并发编辑、原子替换，不读取密钥值。默认预演只更新公共缓存；自定义 endpoint/api 必须先人工核对。
 
-新配置可使用 `opencode-go.providers.opencode-go.apiKeyEnv: OPENCODE_GO_API_KEY` 和 `opencode-go.providers.opencode.apiKeyEnv: OPENCODE_API_KEY`。凭据通过 DSH 凭据存储或启动环境提供。`llm-pi-ai.excludedProviders` 必须包含已交给插件的路由，且其旧 providers 不再包含这些路由。没有 provider 配置时插件保持空目录，配置入口在插件生成的设置页。
+新配置可使用 `opencode-go.providers.opencode-go.apiKeyEnv: OPENCODE_GO_API_KEY` 和 `opencode-go.providers.opencode.apiKeyEnv: OPENCODE_API_KEY`。凭据通过 DSH 凭据存储或启动环境提供。从 `llm-pi-ai.providers` 移除已交给插件的路由；官方版本不支持 `excludedProviders`，不要添加该字段。没有 provider 配置时插件保持空目录，配置入口在插件生成的设置页。官方内置 OpenCode 目录仍指向原生设置，因此插件的凭据与能力调优应在本插件设置中修改。实时协议、价格和不可用原因由模型页面的插件面板展示。
 
 ## 使用与数据
 

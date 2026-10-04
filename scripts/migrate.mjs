@@ -4,12 +4,10 @@ import { join, resolve } from 'node:path'
 import { parseArgs, isDeepStrictEqual } from 'node:util'
 import { randomUUID } from 'node:crypto'
 import yaml from 'js-yaml'
-import { Config as HostConfig, resolvePiAiProfiles } from '@deepseek-ai/dsh-llm-pi-ai'
-import { Catalog, providerProfiles } from '../lib/index.js'
+import { Catalog, providerProfiles, resolveProfiles as resolvePiAiProfiles } from '../lib/index.js'
 const { values } = parseArgs({ options: { home: { type: 'string' }, profile: { type: 'string', default: 'web' }, apply: { type: 'boolean', default: false } } })
 if (!values.home) throw new Error('Usage: node scripts/migrate.mjs --home /absolute/.dsh [--profile web] [--apply]')
 if (!/^[a-zA-Z0-9_-]+$/.test(values.profile)) throw new Error('Invalid profile name')
-if (!HostConfig.dict.excludedProviders) throw new Error('Host lacks excludedProviders; install the documented generic Host changes first')
 const home = resolve(values.home), dir = join(home, 'profiles', values.profile), path = join(dir, 'cordis.patch.yml')
 const pluginManifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
 const manifest = JSON.parse(await readFile(join(dir, 'package.json'), 'utf8'))
@@ -27,7 +25,8 @@ const plugin = target[0] ?? { id: 'opencode-go', config: {} }
 plugin.config ??= {}
 const incoming = plugin.config.providers ?? {}
 const moved = ['opencode-go', 'opencode'].filter(route => providers[route] !== undefined)
-if (moved.length === 0) { console.log('No OpenCode providers remain in llm-pi-ai; configuration left unchanged.'); process.exit(0) }
+if (moved.length === 0 && current.excludedProviders === undefined) { console.log('No OpenCode providers remain in llm-pi-ai; configuration left unchanged.'); process.exit(0) }
+if ((current.excludedProviders ?? []).some(route => !['opencode', 'opencode-go'].includes(route))) throw new Error('Legacy exclusions include other providers; review them before migration')
 for (const route of moved) {
   if (incoming[route] !== undefined) throw new Error(`Both plugins configure ${route}; resolve ownership before migration`)
   if (providers[route].api !== undefined || providers[route].baseURL !== undefined) throw new Error(`Review custom endpoint/protocol for ${route} before migration`)
@@ -54,7 +53,7 @@ for (const route of moved) {
 }
 plugin.config.providers = incoming
 resolvePiAiProfiles(providerProfiles(snapshot, incoming))
-source[0].config = { ...current, providers, excludedProviders: [...new Set([...(current.excludedProviders ?? []), ...routes])] }
+source[0].config = { ...current, providers, excludedProviders: undefined }
 if (!target.length) rows.push(plugin)
 const report = { moved, retainedOverridesForUnavailable: retained, routes: Object.fromEntries(routes.map(route => [route, { listed: snapshot.providers[route].length, chat: snapshot.providers[route].filter(x => !x.unavailableReason).length, free: snapshot.providers[route].filter(x => x.description?.startsWith('Free')).map(x => x.id) }])) }
 console.log(JSON.stringify(report, null, 2))

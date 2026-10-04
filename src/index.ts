@@ -1,12 +1,14 @@
 /** OpenCode-specific routing, public metadata refresh and pricing, independent of the generic pi-ai plugin. */
-import { randomUUID } from 'node:crypto'
 import { join } from 'node:path'
 import type { Context, Volatile } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'
 import { assertUsableApiKey, LlmError, resolveImageAttachmentAccess } from '@deepseek-ai/dsh-llm'
 import type { AdapterRegistrationHandle, DirectoryRegistrationHandle, GenerateOptions } from '@deepseek-ai/dsh-llm'
-import { Config as PiAiConfig, PiAiAdapter, resolvePiAiProfiles as resolveProfiles } from '@deepseek-ai/dsh-llm-pi-ai'
-import type { PiAiProviderProfile, ResolvedPiAiProviderProfile, PiAiAuthInjection } from '@deepseek-ai/dsh-llm-pi-ai'
+import { Config as PiAiConfig } from '@deepseek-ai/dsh-llm-pi-ai'
+import { OpenCodeAdapter, resolveProfiles } from './provider.ts'
+import type { PiAiProviderProfile, PiAiAuthInjection } from './provider.ts'
+export { resolveProfiles, sessionHeaders } from './provider.ts'
+import type { ResolvedPiAiProviderProfile } from '@deepseek-ai/dsh-llm-pi-ai'
 import { resolveDshHome } from '@deepseek-ai/dsh-home-paths'
 import { launchEnvironmentOf } from '@deepseek-ai/dsh-launch-environment'
 import type {} from '@deepseek-ai/dsh-credentials'
@@ -46,14 +48,6 @@ export const Config = z.object({
 export const name = 'opencode-go'
 export const inject = ['llm']
 
-/** Stable conversation affinity for official OpenCode requests.
- * @param options - the actual inference call, including the durable Session id.
- * @returns per-request headers; standalone calls receive their own UUID.
- */
-export function sessionHeaders(options: GenerateOptions): Record<string, string> {
-  return { 'x-opencode-session': options.sessionId === undefined ? randomUUID() : String(options.sessionId) }
-}
-
 /** Explicitly API-key-only auth. No implicit OpenCode account or unrelated environment fallback. */
 function keyOnlyAuth(): PiAiAuthInjection {
   return {
@@ -82,8 +76,8 @@ export async function apply(ctx: Context, config: Config): Promise<void> {
     return resolved
   }
   profiles()
-  const adapter = new PiAiAdapter({
-    profiles, requestHeaders: sessionHeaders, auth: keyOnlyAuth(),
+  const adapter = new OpenCodeAdapter({
+    profiles, auth: keyOnlyAuth(),
     resolveApiKey: async (provider, profile) => {
       const ref = profile.apiKeyEnv
       if (ref === undefined) throw new LlmError(`Set apiKeyEnv for ${provider} in opencode-go settings`, 'MISSING_CREDENTIAL')
@@ -94,19 +88,20 @@ export async function apply(ctx: Context, config: Config): Promise<void> {
     },
     resolveAttachments: () => ctx.get('attachments'),
     resolveImageAccess: (attachments, ref) => resolveImageAttachmentAccess(attachments, path => ctx.get('fs')?.processPathFromHostPath(path), ref),
-  })
+  }, () => providerProfiles(catalog.status().snapshot, structuredClone(config.providers.get()) as Record<string, PiAiProviderProfile>))
   let registration: AdapterRegistrationHandle | undefined
   let directory: DirectoryRegistrationHandle | undefined
   const ns = ctx.fiber.entry?.options.id ?? 'opencode-go'
   const update = (): void => {
     const routes = [...profiles().keys()]
-    const entries = routes.map(provider => ({ provider, displayName: provider === 'opencode-go' ? 'OpenCode Go' : 'OpenCode Zen',
+    const existing = new Set(ctx.llm.listConfigurableProviders().filter(entry => entry.settingsNs !== ns).map(entry => entry.provider))
+    const entries = routes.filter(provider => !existing.has(provider)).map(provider => ({ provider, displayName: provider === 'opencode-go' ? 'OpenCode Go' : 'OpenCode Zen',
       settingsNs: ns, settingsPath: ['providers', provider], declared: false }))
     if (routes.length > 0) {
       if (registration === undefined) registration = ctx.llm.registerAdapter(routes, adapter)
       else registration.replace(routes)
-      if (directory === undefined) directory = ctx.llm.registerConfigurableProviders(entries)
-      else directory.replace(entries)
+      if (directory === undefined && entries.length > 0) directory = ctx.llm.registerConfigurableProviders(entries)
+      else directory?.replace(entries)
     } else { registration?.replace([]); directory?.replace([]) }
   }
   update()

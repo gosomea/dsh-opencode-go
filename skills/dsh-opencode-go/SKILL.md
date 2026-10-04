@@ -11,7 +11,7 @@ description: 安装、迁移和维护 DSH 的 dsh-opencode-go 插件，实时识
 
 本机插件项目位于工作区的 `projects/agent-research/deepseek-harness-plugins/dsh-opencode-go`。在其他机器从已安装 `@foreveryu/dsh-opencode-go/package.json` 定位插件，不能依赖开发机绝对路径。阅读插件 README 和 `docs/host-compatibility.md`。
 
-当前插件需要通用 Host 扩展：公开 `resolvePiAiProfiles`、逐请求 `requestHeaders`、`excludedProviders`、逐模型协议/端点/描述，以及发现服务透传元数据。先核实目标 Host 已有这些能力；否则对照 [实现说明](references/implementation.md)和参考补丁移植、编译。不能宣称未经修改的官方发布版已兼容。OpenCode 业务逻辑留在插件，不重新写回通用 pi-ai 适配器。
+0.1.1 使用官方 DSH 0.2.0-rc.2 的公开 PiAiAdapter 和 pi-ai provider API，无需 Host 补丁。0.1.0 的参考补丁仅用于旧版本，不再移植到新 Host。模型协议、会话头和目录详情由插件维护；原生目录仍指向内置设置，插件凭据与调优请在插件设置页修改。
 
 ## 发现规则
 
@@ -32,7 +32,7 @@ node /absolute/path/to/dsh-opencode-go/scripts/migrate.mjs --home /absolute/path
 node /absolute/path/to/dsh-opencode-go/scripts/migrate.mjs --home /absolute/path/to/.dsh --profile web --apply
 ```
 
-用户已经要求安装时完成预演后直接 apply，无需重复确认。迁移要求一个 `llm-pi-ai` patch 行，保留凭据引用和显式能力差异，移动 OpenCode routes 并更新 `excludedProviders`。先备份原文件、验证配置、检查并发编辑，最终原子替换。已有自定义 endpoint/api 必须核对，不能盲目迁移。检查报告中未服务项、免费项和实际模型数量，不把历史数量写成永久事实。
+用户已经要求安装时完成预演后直接 apply，无需重复确认。迁移要求一个 `llm-pi-ai` patch 行，保留凭据引用和显式能力差异，移动 OpenCode routes 并删除旧的 `excludedProviders` 字段。先备份原文件、验证配置、检查并发编辑，最终原子替换。已有自定义 endpoint/api 必须核对，不能盲目迁移。检查报告中未服务项、免费项和实际模型数量，不把历史数量写成永久事实。
 
 目录保存在 `$DSH_HOME/plugins/dsh-opencode-go/catalog-v1.json`，默认启动和每六小时刷新。用户可在设置 → 模型的插件面板手动刷新、搜索或仅看零费率；Host 的认证 `POST /api/opencode-go/catalog` 也能刷新。失败保留最后成功快照并暴露错误。自动发现的列表不再全量固定写入 profile。
 

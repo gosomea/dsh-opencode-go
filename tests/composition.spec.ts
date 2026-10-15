@@ -7,6 +7,7 @@ import { Context } from '@deepseek-ai/cordis'
 import Loader from '@deepseek-ai/cordis-plugin-loader'
 import Include from '@deepseek-ai/cordis-plugin-include'
 import LlmRuntime from '@deepseek-ai/dsh-llm'
+import { createLaunchEnvironmentSnapshot, DSH_LAUNCH_ENVIRONMENT_KEY } from '@deepseek-ai/dsh-launch-environment'
 import * as PiAi from '@deepseek-ai/dsh-llm-pi-ai'
 import { afterEach, expect, it, vi } from 'vitest'
 import * as OpenCode from '../src/index.ts'
@@ -22,7 +23,7 @@ it('loads a file through Loader, exposes refreshed rates, excludes duplicate dir
     if (url.includes('models.dev')) return Response.json({ 'opencode-go': { npm: '@ai-sdk/openai-compatible', models: {
       'fixture-free': { name: 'Fixture', limit: { context: 10000, output: 2000 }, modalities: { input: ['text'] }, cost: { input: 0, output: 0 } },
     } } })
-    return new Response('<table><tr><td>Fixture</td><td>fixture-free</td><td>https://opencode.ai/zen/go/v1/chat/completions</td><td>@ai-sdk/openai-compatible</td></tr></table>')
+    return new Response('<table><tr><td>Fixture</td><td>fixture-free</td><td>https://opencode.ai/inference/go/v1/chat/completions</td><td>@ai-sdk/openai-compatible</td></tr></table>')
   })
   vi.stubGlobal('fetch', request)
   await writeFile(join(root, 'cordis.yml'), JSON.stringify([
@@ -31,6 +32,9 @@ it('loads a file through Loader, exposes refreshed rates, excludes duplicate dir
     { id: 'opencode-go', name: 'cordis:opencode', config: { providers: { 'opencode-go': { apiKeyEnv: 'TEST_KEY' } }, cachePath: cache, refreshIntervalMs: 0 } },
   ]))
   ctx = new Context()
+  ctx.provide(DSH_LAUNCH_ENVIRONMENT_KEY, createLaunchEnvironmentSnapshot([
+    { source: 'process', values: { TEST_KEY: 'fixture-only-key' } },
+  ]))
   ctx.baseUrl = pathToFileURL(root).href + '/'
   await ctx.plugin(Loader)
   Object.assign(ctx.loader.builtins, { llm: LlmRuntime, pi: PiAi, opencode: OpenCode })

@@ -4,14 +4,14 @@ Live OpenCode Go and Zen catalogs for DeepSeek Harness, including current token 
 
 ## Compatibility and installation
 
-Version 0.1.1 targets unmodified DeepSeek Harness 0.2.0-rc.2 through public provider APIs; see [Host compatibility](docs/host-compatibility.md) and [rc.2 verification](docs/rc2-verification.md). Version 0.1.0 required local Host extensions. Node must satisfy `^22.19 || >=24`.
+Version 0.1.2 supports DeepSeek Harness 0.2.0-rc.2 and 0.2.1-alpha.3 through public provider APIs; see [Host compatibility](docs/host-compatibility.md) and [current-host verification](docs/alpha-compat-verification.md). Version 0.1.0 required local Host extensions. Node must satisfy `^22.19 || >=24`.
 
-For this source revision, build and pack the plugin, then install the generated tarball into the target Host. npm 0.1.0 remains the older patched-Host build until 0.1.1 is published:
+Build and pack this source revision, then install the verified tarball into the target Host. This validation does not publish a registry release:
 
 ```sh
 npm run build
 npm pack
-dsh plugin --profile web add file:/absolute/path/foreveryu-dsh-opencode-go-0.1.1.tgz@0.1.0
+dsh plugin --profile web add /absolute/path/foreveryu-dsh-opencode-go-0.1.2.tgz
 ```
 
 The unscoped npm name belongs to a different author. This project publishes only under `@foreveryu/dsh-opencode-go`. For an existing Go/Zen configuration, run the migration script from the installed package after reviewing its dry run.
@@ -42,7 +42,7 @@ For a new installation, configure `opencode-go.providers` with `opencode-go: { a
 
 Open **Settings → Models → OpenCode Go / Zen**. Refresh explicitly, search by model ID/name, or enable the zero-rate filter. Provider models appear automatically after a successful refresh; model descriptions also carry the rates. Separate Zen and Go tabs show compact price lists. Hover or keyboard-focus a model row for its ID, protocol, capacity, source, and access restrictions; unsupported entries carry a warning marker. New entries are discovered at startup and every six hours by default. `refreshIntervalMs: 0` disables periodic refresh; `sourceTimeoutMs` defaults to 30 seconds.
 
-Go and Zen use separate `/models` lists. Exact provider/model identity is joined with the official protocol table, Models.dev capacity metadata and the installed pi-ai catalog. Unverified chat protocols or capacities are not invented. Inference requests carry `x-opencode-session` from the actual Session ID; standalone calls receive a new UUID. HTTP transport, streaming, tools, images and reasoning conversion use DSH's `PiAiAdapter`.
+Go and Zen use separate `/models` lists under the documented `/inference/go/v1` and `/inference/v1` endpoints. Saved catalogs using the previous `/zen` endpoints remain readable until a successful refresh replaces them. Exact provider/model identity is joined with the official protocol table, Models.dev capacity metadata and the installed pi-ai catalog. Unverified chat protocols or capacities are not invented. Inference requests carry `x-opencode-session` from the actual Session ID; standalone calls receive a new UUID. HTTP transport, streaming, tools, images and reasoning conversion use DSH's `PiAiAdapter`.
 
 Rates are USD per million tokens: input, output, cache read and cache write. Unknown rates show `—`. A model is marked free only when both input and output are explicitly zero and known cache/tier rates do not charge. Go reference rates describe metadata, not subscription quota. Zen zero-rate models can require OpenCode's own client; the plugin reports that restriction and does not impersonate another client. Account credit, remaining quota and future promotional availability are not inferred.
 

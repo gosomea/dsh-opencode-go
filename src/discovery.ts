@@ -3,6 +3,7 @@
 import { attributionHeaders, LlmError } from '@deepseek-ai/dsh-llm'
 import type { LlmDiscoveredModel } from './provider.ts'
 import type { JsonValue } from '@deepseek-ai/dsh-util-values'
+import { inferenceRoot } from './endpoints.ts'
 import { getBuiltinModels } from '@earendil-works/pi-ai/providers/all'
 import type { BuiltinProvider } from '@earendil-works/pi-ai/providers/all'
 const THINKING_LEVELS = ['off', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max'] as const
@@ -109,8 +110,8 @@ function pricingDetail(
  */
 export async function discoverOpenCodeModels(provider: 'opencode' | 'opencode-go', signal?: AbortSignal): Promise<LlmDiscoveredModel[]> {
   const go = provider === 'opencode-go'
-  const baseURL = `https://opencode.ai/zen${go ? '/go' : ''}/v1`
-  const docsURL = `https://opencode.ai/docs/${go ? 'go' : 'zen'}/`
+  const baseURL = `${inferenceRoot(provider)}/v1`
+  const docsURL = `https://opencode.ai/v2/docs/console/${go ? 'go' : 'models'}/`
   const [listingText, metadataText, docs] = await Promise.all([
     source(`${baseURL}/models`, signal), source(MODELS_URL, signal), source(docsURL, signal),
   ])

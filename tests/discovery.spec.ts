@@ -12,7 +12,7 @@ afterEach(() => { vi.unstubAllGlobals() })
 const routes = ['opencode', 'opencode-go'] as const
 
 function fixture(provider: typeof routes[number]) {
-  const base = `https://opencode.ai/zen${provider === 'opencode-go' ? '/go' : ''}/v1`
+  const base = `https://opencode.ai/inference${provider === 'opencode-go' ? '/go' : ''}/v1`
   const models = {
     'new-free': { name: 'New Free', tool_call: true, limit: { context: 1000000, output: 32000 },
       modalities: { input: ['text', 'image', 'audio'] }, cost: { input: 0, output: 0, cache_read: 0 } },
@@ -32,7 +32,7 @@ function fixture(provider: typeof routes[number]) {
     const url = input instanceof Request ? input.url : input.toString()
     if (url === `${base}/models`) return Response.json({ data: ids.map(id => ({ id })) })
     if (url === 'https://models.dev/api.json') return Response.json({ [provider]: { npm: '@ai-sdk/openai-compatible', models } })
-    if (url === `https://opencode.ai/docs/${provider === 'opencode-go' ? 'go' : 'zen'}/`) return new Response(table)
+    if (url === `https://opencode.ai/v2/docs/console/${provider === 'opencode-go' ? 'go' : 'models'}/`) return new Response(table)
     throw new Error(`Unexpected metadata URL: ${url}`)
   })
   vi.stubGlobal('fetch', fetch)

@@ -31,6 +31,16 @@ it('rejects redirected cached endpoints and does not install diagnostic-only mod
  expect(modelProfiles([model],[{id:model.id,contextWindow:90000}])[0]?.contextWindow).toBe(90000)
  expect(()=>providerProfiles({version:1,observedAt:'',providers:{}},{other:{}})).toThrow('Unsupported')
 })
+it.each(['opencode', 'opencode-go'] as const)('reads legacy and current %s cache roots without accepting the other billing route', route => {
+ const model=candidate(route)
+ const snapshot=(baseURL:string)=>({version:1,observedAt:new Date().toISOString(),providers:{[route]:[{...model,configuration:{...model.configuration,baseURL}}]}})
+ expect(validateSnapshot(snapshot(model.configuration.baseURL)).providers[route]).toHaveLength(1)
+ const root=`https://opencode.ai/inference${route==='opencode-go'?'/go':''}/v1`
+ expect(validateSnapshot(snapshot(root)).providers[route]).toHaveLength(1)
+ const other=`https://opencode.ai/inference${route==='opencode-go'?'':'/go'}/v1`
+ expect(()=>validateSnapshot(snapshot(other))).toThrow('redirect')
+ expect(()=>validateSnapshot(snapshot(root+'/redirect'))).toThrow('redirect')
+})
 it('does not commit an invalid user override or a disposed refresh', async () => {
  const catalog=new Catalog(await cache(),10000,async route=>[candidate(route)])
  await expect(catalog.refresh(['opencode'],()=>{throw new Error('invalid override')},()=>{})).rejects.toThrow('invalid override')

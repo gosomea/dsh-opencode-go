@@ -11,12 +11,12 @@ description: 安装、迁移和维护 DSH 的 dsh-opencode-go 插件，实时识
 
 本机插件项目位于工作区的 `projects/agent-research/deepseek-harness-plugins/dsh-opencode-go`。在其他机器从已安装 `@foreveryu/dsh-opencode-go/package.json` 定位插件，不能依赖开发机绝对路径。阅读插件 README 和 `docs/host-compatibility.md`。
 
-0.1.1 使用官方 DSH 0.2.0-rc.2 的公开 PiAiAdapter 和 pi-ai provider API，无需 Host 补丁。0.1.0 的参考补丁仅用于旧版本，不再移植到新 Host。模型协议、会话头和目录详情由插件维护；原生目录仍指向内置设置，插件凭据与调优请在插件设置页修改。
+0.1.2 使用 DSH 0.2.0-rc.2 与 0.2.1-alpha.3 的公开 PiAiAdapter 和 pi-ai provider API，无需 Host 补丁。0.1.0 的参考补丁仅用于旧版本，不再移植到新 Host。模型协议、会话头和目录详情由插件维护；原生目录仍指向内置设置，插件凭据与调优请在插件设置页修改。
 
 ## 发现规则
 
-- Go 与 Zen 各自的 `/models` 是成员来源，禁止把 Zen 模型列表放进 Go。公开地址分别是 `https://opencode.ai/zen/go/v1/models`、`https://opencode.ai/zen/v1/models`。
-- 按精确 ID 对齐[Go 官方协议表](https://opencode.ai/docs/go/#endpoints)、[Zen 官方协议表](https://opencode.ai/docs/zen/#endpoints)和 [Models.dev](https://models.dev/api.json)，不凭名字猜协议。MiniMax、Qwen 在不同路由可能使用不同协议。
+- Go 与 Zen 各自的 `/models` 是成员来源，禁止把 Zen 模型列表放进 Go。公开地址分别是 `https://opencode.ai/inference/go/v1/models`、`https://opencode.ai/inference/v1/models`。
+- 按精确 ID 对齐[Go 官方协议表](https://opencode.ai/v2/docs/console/go/#endpoints)、[Zen 官方协议表](https://opencode.ai/v2/docs/console/models/#endpoints)和 [Models.dev](https://models.dev/api.json)，不凭名字猜协议。MiniMax、Qwen 在不同路由可能使用不同协议。
 - 协议和容量可靠后才加入聊天目录；Jev `/systemone`、无法确认的别名留作诊断。只声明 DSH 支持的 text/image 输入。保留显式用户能力调优。
 - 费率注明美元/百万 token、来源和获取时间，含输入/输出/缓存读/缓存写；未知不能补零。有更高上下文分档须明确提示。Go 参考费率与订阅额度分开。
 - 输入输出明确为零，且已知缓存和分档不收费，才标记免费。不能仅按 `-free` 后缀。零价不证明剩余额度、无限使用或第三方准入。Zen 可能返回 `403 FreeTierError`，仅限 OpenCode 内使用；记录限制，不伪造客户端身份。

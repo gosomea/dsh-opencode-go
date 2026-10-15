@@ -5,6 +5,7 @@ import { randomUUID } from 'node:crypto'
 import type { LlmDiscoveredModel } from './provider.ts'
 import { resolveProfiles, type PiAiModelProfile, type PiAiProviderProfile } from './provider.ts'
 import { discoverOpenCodeModels } from './discovery.ts'
+import { inferenceRoot } from './endpoints.ts'
 
 /** Canonical provider ids preserve the model identities in existing Sessions. */
 export const ROUTES = ['opencode-go', 'opencode'] as const
@@ -56,7 +57,8 @@ export function validateSnapshot(value: unknown): CatalogSnapshot {
     || typeof state.providers !== 'object' || state.providers === null) throw new Error('Invalid OpenCode catalog cache version or date')
   for (const [provider, models] of Object.entries(state.providers)) {
     if (!ROUTES.some(route => route === provider) || !Array.isArray(models)) throw new Error('Invalid OpenCode catalog route')
-    const root = `https://opencode.ai/zen${provider === 'opencode-go' ? '/go' : ''}`
+    const roots = [inferenceRoot(provider === 'opencode-go' ? 'opencode-go' : 'opencode'),
+      `https://opencode.ai/zen${provider === 'opencode-go' ? '/go' : ''}`]
     const ids = new Set<string>()
     for (const model of models) {
       if (typeof model !== 'object' || model === null || typeof model.id !== 'string' || !model.id || ids.has(model.id)) {
@@ -73,7 +75,7 @@ export function validateSnapshot(value: unknown): CatalogSnapshot {
       if (!['openai-completions', 'openai-responses', 'anthropic-messages', 'google-generative-ai'].includes(String(api))) {
         throw new Error('Unverified model protocol in cache')
       }
-      if (model.configuration?.['baseURL'] !== (api === 'anthropic-messages' ? root : `${root}/v1`)) {
+      if (!roots.some(root => model.configuration?.['baseURL'] === (api === 'anthropic-messages' ? root : `${root}/v1`))) {
         throw new Error('OpenCode cache cannot redirect model requests')
       }
       for (const count of [model.contextWindow, model.maxTokens]) {

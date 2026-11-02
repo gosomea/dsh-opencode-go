@@ -41,6 +41,19 @@ it.each(['opencode', 'opencode-go'] as const)('reads legacy and current %s cache
  expect(()=>validateSnapshot(snapshot(other))).toThrow('redirect')
  expect(()=>validateSnapshot(snapshot(root+'/redirect'))).toThrow('redirect')
 })
+it.each(['opencode', 'opencode-go'] as const)('accepts only protocol-specific %s endpoints', route => {
+ const model=candidate(route)
+ const root=`https://opencode.ai/inference${route==='opencode-go'?'/go':''}`
+ const other=`https://opencode.ai/inference${route==='opencode-go'?'':'/go'}`
+ const snapshot=(api:string,baseURL:string)=>({version:1,observedAt:new Date().toISOString(),providers:{[route]:[{...model,configuration:{api,baseURL}}]}})
+ for (const [api,suffix] of [['openai-completions','/openai/v1'],['openai-responses','/openai/v1'],
+   ['anthropic-messages','/anthropic'],['google-generative-ai','/google/v1beta']] as const) {
+   expect(validateSnapshot(snapshot(api,root+suffix)).providers[route]).toHaveLength(1)
+   expect(()=>validateSnapshot(snapshot(api,other+suffix))).toThrow('redirect')
+   expect(()=>validateSnapshot(snapshot(api,root+suffix+'/redirect'))).toThrow('redirect')
+ }
+ expect(()=>validateSnapshot(snapshot('anthropic-messages',root+'/openai/v1'))).toThrow('redirect')
+})
 it('does not commit an invalid user override or a disposed refresh', async () => {
  const catalog=new Catalog(await cache(),10000,async route=>[candidate(route)])
  await expect(catalog.refresh(['opencode'],()=>{throw new Error('invalid override')},()=>{})).rejects.toThrow('invalid override')

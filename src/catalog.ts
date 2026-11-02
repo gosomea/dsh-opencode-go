@@ -75,7 +75,11 @@ export function validateSnapshot(value: unknown): CatalogSnapshot {
       if (!['openai-completions', 'openai-responses', 'anthropic-messages', 'google-generative-ai'].includes(String(api))) {
         throw new Error('Unverified model protocol in cache')
       }
-      if (!roots.some(root => model.configuration?.['baseURL'] === (api === 'anthropic-messages' ? root : `${root}/v1`))) {
+      const current = roots[0]
+      const protocolBase = api === 'anthropic-messages' ? `${current}/anthropic`
+        : api === 'google-generative-ai' ? `${current}/google/v1beta` : `${current}/openai/v1`
+      if (model.configuration?.['baseURL'] !== protocolBase
+        && !roots.some(root => model.configuration?.['baseURL'] === (api === 'anthropic-messages' ? root : `${root}/v1`))) {
         throw new Error('OpenCode cache cannot redirect model requests')
       }
       for (const count of [model.contextWindow, model.maxTokens]) {

@@ -11,7 +11,7 @@ description: 安装、迁移和维护 DSH 的 dsh-opencode-go 插件，实时识
 
 本机插件项目位于工作区的 `projects/agent-research/deepseek-harness-plugins/dsh-opencode-go`。在其他机器从已安装 `@foreveryu/dsh-opencode-go/package.json` 定位插件，不能依赖开发机绝对路径。阅读插件 README 和 `docs/host-compatibility.md`。
 
-0.1.2 使用 DSH 0.2.0-rc.2 与 0.2.1-alpha.3 的公开 PiAiAdapter 和 pi-ai provider API，无需 Host 补丁。0.1.0 的参考补丁仅用于旧版本，不再移植到新 Host。模型协议、会话头和目录详情由插件维护；原生目录仍指向内置设置，插件凭据与调优请在插件设置页修改。
+0.1.3 使用 DSH 0.2.2-alpha.2 的公开 PiAiAdapter 和 pi-ai provider API，无需 Host 补丁；旧版 Host 使用对应旧版插件。0.1.0 的参考补丁仅用于旧版本，不再移植到新 Host。模型协议、会话头和目录详情由插件维护；原生目录仍指向内置设置，插件凭据与调优请在插件设置页修改。
 
 ## 发现规则
 

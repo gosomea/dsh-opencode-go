@@ -55,11 +55,18 @@ function tableRows(html: string): string[][] {
   )
 }
 
-function protocol(endpoint: string): string | undefined {
-  if (endpoint.endsWith('/chat/completions')) return 'openai-completions'
-  if (endpoint.endsWith('/responses')) return 'openai-responses'
-  if (endpoint.endsWith('/messages')) return 'anthropic-messages'
-  if (endpoint.includes('/models/')) return 'google-generative-ai'
+function protocol(endpoint: string, root: string, id: string): { api: string; baseURL: string } | undefined {
+  // Accept only exact documented operation paths within the selected billing route.
+  for (const baseURL of [`${root}/openai/v1`, `${root}/v1`]) {
+    if (endpoint === `${baseURL}/chat/completions`) return { api: 'openai-completions', baseURL }
+    if (endpoint === `${baseURL}/responses`) return { api: 'openai-responses', baseURL }
+  }
+  for (const baseURL of [`${root}/anthropic`, root]) {
+    if (endpoint === `${baseURL}/v1/messages`) return { api: 'anthropic-messages', baseURL }
+  }
+  for (const baseURL of [`${root}/google/v1beta`, `${root}/v1`]) {
+    if (endpoint === `${baseURL}/models/${id}`) return { api: 'google-generative-ai', baseURL }
+  }
   return undefined
 }
 
@@ -73,7 +80,9 @@ function publishedRate(value: string | undefined): number | undefined {
 }
 
 function nameKey(name: string): string {
-  return name.replace(/\s*\([^)]*\)/g, '').replace(/[^a-z0-9]/gi, '').toLowerCase()
+  return name.replace(/\s*\([^)]*\)/g, '')
+    .replace(/\s*(?:[<>≤≥]|&(?:lt|gt);)\s*[\d.,]+\s*[kmb]?(?:\s*tokens?)?.*$/i, '')
+    .replace(/[^a-z0-9]/gi, '').toLowerCase()
 }
 
 function pricingDetail(
@@ -87,14 +96,23 @@ function pricingDetail(
   const output = official === undefined ? rate(cost['output']) : publishedRate(official[2])
   const read = official === undefined ? rate(cost['cache_read']) : publishedRate(official[3])
   const write = official === undefined ? rate(cost['cache_write']) : publishedRate(official[4])
-  const tiers = Array.isArray(cost['tiers']) ? cost['tiers'] : []
-  const free = input === 0 && output === 0 && (read === undefined || read === 0) && (write === undefined || write === 0)
-    && tiers.every(tier => Object.entries(record(tier)).every(([key, value]) => key === 'tier' || rate(value) === 0))
+  const tiers = cost['tiers'] === undefined ? [] : Array.isArray(cost['tiers']) ? cost['tiers'] : undefined
+  const freeTier = (value: unknown): boolean => {
+    const tier = record(value)
+    return ['input', 'output', 'cache_read', 'cache_write'].every(key => rate(tier[key]) === 0)
+      && Object.entries(tier).every(([key, entry]) => key === 'tier' || rate(entry) === 0)
+  }
+  const officialTiers = rows.filter(row => row.length === 5 && row[0]?.includes('>') && nameKey(row[0]) === nameKey(name))
+  const legacyTier = cost['context_over_200k']
+  const free = input === 0 && output === 0 && read === 0 && write === 0
+    && tiers !== undefined && tiers.every(freeTier)
+    && (legacyTier === undefined || freeTier(legacyTier))
+    && officialTiers.every(row => row.slice(1).every(value => publishedRate(value) === 0))
   const amount = (value: number | undefined): string => value === undefined ? '—' : `$${String(value)}`
   const billing = free ? 'Free (current rate)' : provider === 'opencode-go' ? 'Go subscription; reference rates' : 'Pay as you go'
   const eligibility = free && provider === 'opencode' ? ' · third-party access may be restricted by OpenCode' : ''
   const prices = `USD/1M tokens: input ${amount(input)} · output ${amount(output)} · cache read ${amount(read)} · cache write ${amount(write)}`
-  const hasTiers = tiers.length > 0 || rows.some(row => row[0]?.includes('>') && nameKey(row[0]) === nameKey(name))
+  const hasTiers = (tiers?.length ?? 0) > 0 || legacyTier !== undefined || officialTiers.length > 0
   return {
     free,
     description: `${billing}${eligibility} · ${prices}${hasTiers ? ' · higher context tiers may apply' : ''} · ${official === undefined ? 'models.dev' : 'opencode.ai'} · ${date}`,
@@ -110,7 +128,8 @@ function pricingDetail(
  */
 export async function discoverOpenCodeModels(provider: 'opencode' | 'opencode-go', signal?: AbortSignal): Promise<LlmDiscoveredModel[]> {
   const go = provider === 'opencode-go'
-  const baseURL = `${inferenceRoot(provider)}/v1`
+  const root = inferenceRoot(provider)
+  const baseURL = `${root}/v1`
   const docsURL = `https://opencode.ai/v2/docs/console/${go ? 'go' : 'models'}/`
   const [listingText, metadataText, docs] = await Promise.all([
     source(`${baseURL}/models`, signal), source(MODELS_URL, signal), source(docsURL, signal),
@@ -121,7 +140,7 @@ export async function discoverOpenCodeModels(provider: 'opencode' | 'opencode-go
   const metadataModels = record(directory['models'])
   if (Object.keys(metadataModels).length === 0) throw new LlmError(`OpenCode discovery: metadata missing for ${provider}`, 'DISCOVERY_FAILED')
   const rows = tableRows(docs)
-  const endpoints = new Map(rows.filter(row => row[2]?.startsWith(`${baseURL}/`)).map(row => [row[1], row]))
+  const endpoints = new Map(rows.filter(row => row[2]?.startsWith(`${root}/`)).map(row => [row[1], row]))
   if (endpoints.size === 0) throw new LlmError(`OpenCode discovery: no protocol table found at ${docsURL}`, 'DISCOVERY_FAILED')
   const installed = catalogModels(provider)
   const date = new Date().toISOString().slice(0, 10)
@@ -134,14 +153,8 @@ export async function discoverOpenCodeModels(provider: 'opencode' | 'opencode-go
     const existing = installed.get(id)
     const row = endpoints.get(id)
     const name = row?.[0] ?? (typeof metadata['name'] === 'string' ? metadata['name'] : existing?.name ?? id)
-    const npm = record(metadata['provider'])['npm'] ?? directory['npm']
-    const npmApi: Readonly<Record<string, string>> = {
-      '@ai-sdk/openai-compatible': 'openai-completions', '@ai-sdk/openai': 'openai-responses',
-      '@ai-sdk/anthropic': 'anthropic-messages', '@ai-sdk/google': 'google-generative-ai',
-    }
-    const api = row === undefined
-      ? (Object.keys(metadata).length === 0 ? existing?.api : typeof npm === 'string' ? npmApi[npm] : undefined)
-      : protocol(row[2] ?? '')
+    const route = row === undefined ? undefined : protocol(row[2] ?? '', root, id)
+    const api = route?.api
     const pricing = pricingDetail(provider, name, metadata, rows, date)
     const label = pricing.free && !/free/i.test(name) ? `${name} (Free)` : name
     if (api === undefined || metadata['tool_call'] === false) {
@@ -160,7 +173,7 @@ export async function discoverOpenCodeModels(provider: 'opencode' | 'opencode-go
       ? rawInput.filter((item): item is 'text' | 'image' => item === 'text' || item === 'image')
       : [...existing?.input ?? ['text']]
     const configuration: Record<string, JsonValue> = {
-      api, baseURL: api === 'anthropic-messages' ? baseURL.slice(0, -3) : baseURL,
+      api, baseURL: route!.baseURL,
     }
     if (existing === undefined && metadata['reasoning'] === true) {
       const options = Array.isArray(metadata['reasoning_options']) ? metadata['reasoning_options'] : []

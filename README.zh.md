@@ -4,14 +4,14 @@
 
 ## 安装与兼容性
 
-0.1.2 通过公开 API 支持 DSH 0.2.0-rc.2 与 0.2.1-alpha.3，协议分派与会话请求头由插件实现，无需修改 Host；0.1.0 才依赖旧源码扩展。详见[兼容性说明](docs/host-compatibility.md)和[当前宿主验收记录](docs/alpha-compat-verification.zh.md)。Node 要求 `^22.19 || >=24`。
+0.1.3 使用公开 API 适配 DSH 0.2.2-alpha.2，协议分派与会话请求头由插件实现，无需修改 Host；旧版 Host 需要使用较早的插件版本。详见[兼容性说明](docs/host-compatibility.md)。Node 要求 `^22.19 || >=24`。
 
 本次源码适配先构建、打包，再把验收后的 tarball 安装到目标 Host。本次验证不发布 npm 版本：
 
 ```sh
 npm run build
 npm pack
-dsh plugin --profile web add /absolute/path/foreveryu-dsh-opencode-go-0.1.2.tgz
+dsh plugin --profile web add /absolute/path/foreveryu-dsh-opencode-go-0.1.3.tgz
 ```
 
 npm 未加 scope 的同名包属于其他作者，本项目仅发布为 `@foreveryu/dsh-opencode-go`。已有 Go / Zen 配置时，从安装后的包目录运行迁移脚本，先核对预演结果。源码开发和迁移示例：
@@ -37,7 +37,7 @@ node /absolute/path/to/dsh-opencode-go/scripts/migrate.mjs --home /absolute/path
 
 Go / Zen 分别读取 `/inference/go/v1` 和 `/inference/v1` 下的实时 `/models`；已有 `/zen` 缓存保持可读，成功刷新后替换。插件按精确 provider/model ID 关联官方协议表、Models.dev 和已安装 pi-ai 能力目录。不凭名称猜协议，不混用 Go / Zen 列表。推理复用 DSH `PiAiAdapter`，会话头使用真实 Session ID；无 Session 的独立请求使用独立 UUID。
 
-价格单位是美元/百万 token，包含输入、输出、缓存读、缓存写，未知显示 `—`。仅输入输出明确为零且已知缓存和分档都不收费时标记免费。Go 参考价格不代表订阅剩余额度；Zen 零费率模型可能只允许 OpenCode 客户端使用。插件保留准入限制说明，不伪装客户端身份，也不承诺无限免费。
+价格单位是美元/百万 token，包含输入、输出、缓存读、缓存写，未知显示 `—`。仅输入、输出、缓存读写明确为零且已公布的分档都不收费时标记免费。Go 参考价格不代表订阅剩余额度；Zen 零费率模型可能只允许 OpenCode 客户端使用。插件保留准入限制说明，不伪装客户端身份，也不承诺无限免费。
 
 缓存位于 `$DSH_HOME/plugins/dsh-opencode-go/catalog-v1.json`，只含公共模型元数据。失败保留最后成功快照，并展示错误和获取时间。卸载取消请求、定时器并注销 provider、发现服务和 HTTP 路由。Host 已认证的 `GET/POST /api/opencode-go/catalog` 用于查询/刷新，不向浏览器返回凭据，也不向公共元数据服务发送推理密钥。
 

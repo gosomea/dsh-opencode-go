@@ -29,6 +29,16 @@ async function drain(adapter: PiAiAdapter, provider: string, sessionId?: string)
 }
 
 describe('OpenCode session affinity on the wire', () => {
+  it('streams text and completes a request through the Host adapter', async () => {
+    const server = await mockServer([{ events: textEvents }])
+    const adapter = adapterOf('opencode-go', {
+      api: 'openai-completions', baseURL: server.url, models: [{ id: 'test-model' }],
+    })
+    const chunks = await Array.fromAsync(adapter.stream({ provider: 'opencode-go', model: 'test-model', messages: [] }))
+    expect(chunks.filter(chunk => chunk.type === 'text-delta').map(chunk => chunk.text).join('')).toBe('hello')
+    expect(chunks.at(-1)).toMatchObject({ type: 'finish', reason: { kind: 'stop' } })
+  })
+
   it.each(['opencode', 'opencode-go'])('keeps %s conversations distinct across repeated and prepared requests', async (provider) => {
     const server = await mockServer(Array.from({ length: 4 }, () => ({ events: textEvents })))
     const adapter = adapterOf(provider, {
@@ -88,6 +98,20 @@ it.each([
   await drain(adapter, 'opencode-go', 'adopted-session')
   expect(server.paths).toEqual([path])
   expect(server.headers[0]?.['x-opencode-session']).toBe('adopted-session')
+})
+
+it('dispatches Google models with the session header to the documented versioned base', async () => {
+  const server = await mockServer([{ status: 400, body: '{"error":{"message":"wire probe"}}' }])
+  const adapter = adapterOf('opencode-go', { models: [{
+    id: 'test-model', api: 'google-generative-ai', baseURL: `${server.url}/google/v1beta`,
+  }] })
+  await Array.fromAsync(adapter.stream({
+    provider: 'opencode-go', model: 'test-model',
+    messages: [{ role: 'user', content: [{ type: 'text', text: 'hello' }] }],
+    sessionId: 'google-session' as NonNullable<GenerateOptions['sessionId']>,
+  }))
+  expect(server.paths).toEqual(['/google/v1beta/models/test-model:streamGenerateContent?alt=sse'])
+  expect(server.headers[0]?.['x-opencode-session']).toBe('google-session')
 })
 
 it('keeps concurrent calls and mixed model protocols on their own endpoints', async () => {
